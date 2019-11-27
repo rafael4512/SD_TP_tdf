@@ -26,7 +26,7 @@ public class Servico implements Runnable {
             while (true) {
                 
                 String s = in.readLine();   /** Le o que foi escrito no socket do cliente **/
-                if (s==null || s.equals("Quit"))       /** Se o cliente escreveu Quit fecha-se a conexao com o cliente **/
+                if (s==null || s.equals("quit"))       /** Se o cliente escreveu Quit fecha-se a conexao com o cliente **/
                     break;
                 System.out.println("Funciona");
                 out.println(s);             /** Escreve no socket do cliente o que foi lido e envia para o cliente **/
@@ -45,6 +45,12 @@ public class Servico implements Runnable {
             }
             catch(IOException e) { System.out.println(e);}
         }
+    }
+
+
+    //Registar um Cliente
+    public void servRegistarCliente(String s , PrintWriter out){
+        
     }
     
 

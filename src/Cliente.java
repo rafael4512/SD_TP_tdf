@@ -21,7 +21,7 @@ public class Cliente {
         while( true ){
         
             String s = buffer.readLine();       //Le o que foi escrito no System.in
-            if(s==null || s.equals("Quit") )              // Se o cliente escreve Quit o cliente fecha
+            if(s==null || s.equals("quit") )              // Se o cliente escreve Quit o cliente fecha
                 break;
             out.println(s);                     // Escreve no socket o que foi lido e envia para o servidor
             out.flush();                        // Limpa a stream de dados
