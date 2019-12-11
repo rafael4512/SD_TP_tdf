@@ -16,6 +16,32 @@ public class Servico implements Runnable {
 
     }
 
+    private void login(BufferedReader in, PrintWriter out){
+        
+        String psw = null;
+        String usr = null;
+        try{
+            while(usr==null){
+                out.println("Username: ");
+                out.flush();
+                usr = in.readLine();
+            }
+            while(psw==null){
+                out.println("Password:");
+                out.flush();
+                psw = in.readLine();
+            }
+
+            out.println(usr);
+            out.flush();
+            out.println(psw);
+            out.flush();
+            
+        }catch(IOException e){
+            System.out.println(e);
+        }
+    }
+
     public void run(){
 
         try {
@@ -24,13 +50,22 @@ public class Servico implements Runnable {
             PrintWriter out = new PrintWriter(cliente.getOutputStream());
 
             while (true) {
-                
+
                 String s = in.readLine();   /** Le o que foi escrito no socket do cliente **/
-                if (s==null || s.equals("quit"))       /** Se o cliente escreveu Quit fecha-se a conexao com o cliente **/
+                if (s==null || s.equals("Quit"))       /** Se o cliente escreveu Quit fecha-se a conexao com o cliente **/
                     break;
-                System.out.println("Funciona");
-                out.println(s);             /** Escreve no socket do cliente o que foi lido e envia para o cliente **/
-                out.flush();                /** Limpa a stream de dados **/
+
+                if (s.equals("Login")){
+                    login(in,out);
+                }
+                else{
+                    continue;
+                }
+
+
+                //System.out.println("Funciona");
+                //out.println(s);             /** Escreve no socket do cliente o que foi lido e envia para o cliente **/
+                //out.flush();                /** Limpa a stream de dados **/
             }
 
         }catch(IOException e){
@@ -48,11 +83,4 @@ public class Servico implements Runnable {
     }
 
 
-    //Registar um Cliente
-    public void servRegistarCliente(String s , PrintWriter out){
-        
-    }
-    
-
 }
-

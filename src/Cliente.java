@@ -18,10 +18,14 @@ public class Cliente {
         // out escreve no output do socket
         PrintWriter out = new PrintWriter((socket.getOutputStream()));
 
+        System.out.println("Welcome to SoundSky!");
+        System.out.println("For information about the different commands SoundSky supports, please type 'help'.");
+        System.out.println("What would like to do?");
+
         while( true ){
-        
+
             String s = buffer.readLine();       //Le o que foi escrito no System.in
-            if(s==null || s.equals("quit") )              // Se o cliente escreve Quit o cliente fecha
+            if(s==null || s.equals("Quit") )              // Se o cliente escreve Quit o cliente fecha
                 break;
             out.println(s);                     // Escreve no socket o que foi lido e envia para o servidor
             out.flush();                        // Limpa a stream de dados
