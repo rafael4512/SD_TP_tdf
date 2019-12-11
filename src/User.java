@@ -1,7 +1,7 @@
 public class User {
 
     private String username;
-    protected char[] password;
+    private char[] password;
     private int status; // 0 = está Offline || 1 =  está online
 
     public User() {

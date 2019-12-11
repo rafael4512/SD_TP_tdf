@@ -31,12 +31,15 @@ public class Servico implements Runnable {
                 out.flush();
                 psw = in.readLine();
             }
-
-            out.println(usr);
-            out.flush();
-            out.println(psw);
-            out.flush();
             
+            if(sound.checkUser(usr,psw.toCharArray())){
+                out.println("Welcome");
+                out.flush();
+            }
+            else{
+                out.println("Wrong username or password");
+                out.flush();
+            }
         }catch(IOException e){
             System.out.println(e);
         }
@@ -58,14 +61,9 @@ public class Servico implements Runnable {
                 if (s.equals("Login")){
                     login(in,out);
                 }
-                else{
-                    continue;
-                }
 
-
-                //System.out.println("Funciona");
-                //out.println(s);             /** Escreve no socket do cliente o que foi lido e envia para o cliente **/
-                //out.flush();                /** Limpa a stream de dados **/
+                out.println("");             /** Escreve no socket do cliente o que foi lido e envia para o cliente **/
+                out.flush();                /** Limpa a stream de dados **/
             }
 
         }catch(IOException e){
