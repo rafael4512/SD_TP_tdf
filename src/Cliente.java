@@ -6,17 +6,30 @@ import java.net.Socket;
 
 public class Cliente implements Runnable{
 
-  private BufferedReader pw;
+    private BufferedReader pw;
+    private static int k = 0;
 
-  public Cliente(BufferedReader pw){
-      this.pw = pw;
-  }
+    public Cliente(BufferedReader pw){
+        this.pw = pw;
+    }
 
     public void run(){
-      while(true){
-        System.out.println(message);
-      }
-  }
+        while(true && k == 0){
+            try{
+                String message = pw.readLine();
+                if(message !=null)
+                    System.out.println(message);
+                else{
+                    Thread.currentThread().interrupt();
+                }
+
+            }catch(Exception e){
+                System.out.println("Exit");
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
 
     public static void main(String[] args) throws Exception{
         //Socket conectado na porta 12345 e com o IP 127.0.0.1 (localhost)
@@ -31,8 +44,6 @@ public class Cliente implements Runnable{
         PrintWriter out = new PrintWriter((socket.getOutputStream()));
 
         System.out.println("Welcome to SoundSky!");
-        System.out.println("For information about the different commands SoundSky supports, please type 'help'.");
-        System.out.println("What would like to do?");
 
         Thread printer = new Thread(new Cliente(in));
         printer.start();
@@ -40,8 +51,11 @@ public class Cliente implements Runnable{
         while( true ){
 
             String s = buffer.readLine();       //Le o que foi escrito no System.in
-            if(s==null || s.equals("Quit") )              // Se o cliente escreve Quit o cliente fecha
+            if(s==null || s.equals("0")){ // Se o cliente escreve Quit o cliente fecha 
+                k=1;
                 break;
+            }
+
             out.println(s);                     // Escreve no socket o que foi lido e envia para o servidor
             out.flush();                        // Limpa a stream de dados
             //System.out.println(in.readLine());  // Obtem a resposta do servidor e faz echo para o terminal

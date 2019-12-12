@@ -12,11 +12,13 @@ public class SoundSky{
     
     }
 
-    public boolean checkUser(String username, char[] password){
+    public synchronized boolean checkUser(String username, char[] password){
         
         if(this.users.containsKey(username)){
-            if (isPasswordCorrect(password , this.users.get(username).getPassword()))
+            if (isPasswordCorrect(this.users.get(username).getPassword(),password) && this.users.get(username).getStatus() == 0){
+                this.users.get(username).setStatus(1);
                 return true;
+            }
         }
         
         return false;
@@ -64,4 +66,6 @@ public class SoundSky{
 
         return isCorrect;
     }
+
+
 }

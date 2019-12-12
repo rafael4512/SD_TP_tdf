@@ -15,6 +15,7 @@ public class User {
         this.password = password.toCharArray();
         this.status = status;
     }
+    
     public User(User u){
         this.username=u.getUsername();
         this.password=u.getPassword();
