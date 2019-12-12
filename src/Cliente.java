@@ -4,7 +4,19 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class Cliente {
+public class Cliente implements Runnable{
+
+  private BufferedReader pw;
+
+  public Cliente(BufferedReader pw){
+      this.pw = pw;
+  }
+
+    public void run(){
+      while(true){
+        System.out.println(message);
+      }
+  }
 
     public static void main(String[] args) throws Exception{
         //Socket conectado na porta 12345 e com o IP 127.0.0.1 (localhost)
@@ -22,6 +34,9 @@ public class Cliente {
         System.out.println("For information about the different commands SoundSky supports, please type 'help'.");
         System.out.println("What would like to do?");
 
+        Thread printer = new Thread(new Cliente(in));
+        printer.start();
+
         while( true ){
 
             String s = buffer.readLine();       //Le o que foi escrito no System.in
@@ -29,7 +44,7 @@ public class Cliente {
                 break;
             out.println(s);                     // Escreve no socket o que foi lido e envia para o servidor
             out.flush();                        // Limpa a stream de dados
-            System.out.println(in.readLine());  // Obtem a resposta do servidor e faz echo para o terminal
+            //System.out.println(in.readLine());  // Obtem a resposta do servidor e faz echo para o terminal
             //(bloqueia a espera da resposta)
         }
         socket.shutdownOutput();                // Fecha o lado de escrita do socket
