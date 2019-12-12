@@ -1,24 +1,34 @@
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class SoundSky{
 
     private Map<String,User> users;
-    
+    ReentrantLock lock;
+
     public SoundSky(){
         
         this.users = new HashMap<String, User>();
-    
+        lock = new ReentrantLock();
     }
 
-    public synchronized boolean checkUser(String username, char[] password){
+    public boolean checkUser(String username, char[] password){
         
         if(this.users.containsKey(username)){
+            
+            lock.lock();
+            
             if (isPasswordCorrect(this.users.get(username).getPassword(),password) && this.users.get(username).getStatus() == 0){
                 this.users.get(username).setStatus(1);
+            
+                lock.unlock();
+                
                 return true;
             }
+            
+            lock.unlock();
         }
         
         return false;
@@ -67,5 +77,11 @@ public class SoundSky{
         return isCorrect;
     }
 
-
+    public void cS(String username){
+        lock.lock();
+        if(username!=null){
+            users.get(username).setStatus(0);
+        }
+        lock.unlock();
+    }
 }

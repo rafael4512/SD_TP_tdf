@@ -9,6 +9,7 @@ public class Servico implements Runnable {
     private Socket cliente;
     private SoundSky sound;
     private int k = 0;
+    private String name = null;
 
     public Servico(Socket cliente,SoundSky s) {
 
@@ -63,6 +64,7 @@ public class Servico implements Runnable {
             }
             
             if(sound.checkUser(usr,psw.toCharArray())){
+                name = usr;
                 out.println("Welcome");
                 out.flush();
                 k=1;
@@ -102,8 +104,10 @@ public class Servico implements Runnable {
                 }
 
                 String s = in.readLine();   /** Le o que foi escrito no socket do cliente **/
-                if (s==null || s.equals("0"))       /** Se o cliente escreveu Quit fecha-se a conexao com o cliente **/
+                if (s==null || s.equals("0")){
+                    sound.cS(name);/** Se o cliente escreveu Quit fecha-se a conexao com o cliente **/
                     break;
+                }
 
                 if(s.equals("1") && k==0){
                     login(in,out);

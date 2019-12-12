@@ -14,7 +14,7 @@ public class Cliente implements Runnable{
     }
 
     public void run(){
-        while(true && k == 0){
+        while(k == 0){
             try{
                 String message = pw.readLine();
                 if(message !=null)
