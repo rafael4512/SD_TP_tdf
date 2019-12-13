@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.io.File;
 
 public class Servico implements Runnable {
 
@@ -19,7 +20,7 @@ public class Servico implements Runnable {
     }
 
     private void register(BufferedReader in, PrintWriter out){
-        
+
         String psw = null;
         String usr = null;
         try{
@@ -33,10 +34,12 @@ public class Servico implements Runnable {
                 out.flush();
                 psw = in.readLine();
             }
-            
+
             if(sound.addUser(usr,psw)){
                 out.println("User registered");
                 out.flush();
+                File newDir = new File("downloads/" + usr);
+                newDir.mkdir();
             }
             else{
                 out.println("Username is already in use");
@@ -48,7 +51,7 @@ public class Servico implements Runnable {
     }
 
     private void login(BufferedReader in, PrintWriter out){
-        
+
         String psw = null;
         String usr = null;
         try{
@@ -62,7 +65,7 @@ public class Servico implements Runnable {
                 out.flush();
                 psw = in.readLine();
             }
-            
+
             if(sound.checkUser(usr,psw.toCharArray())){
                 name = usr;
                 out.println("Welcome");
@@ -84,7 +87,7 @@ public class Servico implements Runnable {
         out.println("0-Exit");
         out.flush();
     }
-    
+
     public void menu2(PrintWriter out){
         out.println("1-Upload music");
         out.flush();
