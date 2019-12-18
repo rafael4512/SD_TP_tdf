@@ -109,16 +109,15 @@ public class Servico implements Runnable {
                 //                                             //
                 //----- TRATAR DE COMO FAZER AS ETIQUETAS -----//
                 //                                             //
-                File someFile = new File("to/"+name+".mp3");
+                File someFile = new File("musicas/"+name+".mp3");
                 FileOutputStream fos = new FileOutputStream(someFile);
                 while(true){
-                    String size = in.readLine();
-
-                    if(size.equals("sending Finished"))
-                      break;
+                    //String size = in.readLine();
 
                     String data = in.readLine();
-                    int sz = Integer.parseInt(size);
+                    if(data.equals("sending Finished"))
+                      break;
+                    //int sz = Integer.parseInt(size);
                     byte[] decodedString = Base64.getDecoder().decode(data.getBytes("UTF-8"));
 
                     fos.write(decodedString);

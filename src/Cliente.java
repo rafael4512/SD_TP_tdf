@@ -30,16 +30,19 @@ public class Cliente implements Runnable{
           byte[] buf = new byte[850000];
 
           ot.println("music data incoming");
+          ot.flush();
           for (int readNum; (readNum = targetStream.read(buf)) != -1;){
               byte[] bytes = new byte[readNum];
 
               System.arraycopy(buf,0,bytes,0,readNum);
 
               String sende = Base64.getEncoder().encodeToString(bytes);
-              ot.println(bytes.length);
+              //ot.println(bytes.length);
               ot.println(sende);
+              ot.flush();
           }
         ot.println("sending Finished");
+        ot.flush();
       }catch(Exception e){}
     }
 
