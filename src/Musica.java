@@ -6,7 +6,7 @@ public class Musica{
     private String titulo;
     private String artista;
     private int ano;
-    private List<Etiqueta> etiquetas;
+    private List<String> etiquetas;
     private int id;
     private int downloads;
 
@@ -15,18 +15,18 @@ public class Musica{
         this.titulo = "";
         this.artista = "";
         this.ano = 0;
-        this.etiquetas = new ArrayList<Etiqueta>();
+        this.etiquetas = new ArrayList<String>();
         this.id = -1;
 
     }
 
-    public Musica(String tit,String art, int x,List<Etiqueta> eti){
+    public Musica(String tit,String art, int x,List<String> eti,int idUniq){
 
         this.titulo = tit;
         this.artista = art;
         this.ano = x;
         this.etiquetas = eti;
-        this.id = -1;
+        this.id = idUniq;
 
     }
 
@@ -57,7 +57,7 @@ public class Musica{
         return this.ano;
     }
 
-    public List<Etiqueta> getEtiquetas(){
+    public List<String> getEtiquetas(){
 
         return this.etiquetas;
     }
@@ -84,7 +84,7 @@ public class Musica{
         this.ano = x;
     }
 
-    public void setEtiquetas(List<Etiqueta> l){
+    public void setEtiquetas(List<String> l){
 
         this.etiquetas = l;
     }

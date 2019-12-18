@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Base64;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Servico implements Runnable {
 
@@ -85,6 +87,21 @@ public class Servico implements Runnable {
         }
     }
 
+
+    public void selectEtiquetas(List<String> etiquetas, BufferedReader in, PrintWriter out){
+           int i=0;
+           try{
+              String etiqueta = in.readLine();
+              if(etiqueta==null) etiquetas.add("NULL");
+              else{
+                  if(etiqueta.contains("1")){etiquetas.add("POP");i++;}
+                  if(etiqueta.contains("2")){etiquetas.add("ROCK");i++;}
+                  if(etiqueta.contains("3")){etiquetas.add("ROCK");i++;}
+                  if(i==0){etiquetas.add("NULL");}
+              }
+           }catch(Exception e){}
+    }
+
     public void receiveMusic(BufferedReader in, PrintWriter out){
         try{
             out.println("Song name:");
@@ -98,9 +115,15 @@ public class Servico implements Runnable {
             out.println("Author:");
             out.flush();
             String autor = in.readLine();
-            //Etiquetas coiso
 
-            //Etiquetas coisa
+            List<String> etiquetas = new ArrayList<>();
+
+            out.println("Etiquetas:");
+            out.flush();
+            out.println("1-POP 2-ROCK 3-EDM (separated by space)");
+            out.flush();
+            selectEtiquetas(etiquetas,in,out);
+
             out.println("ready for receival.");
             out.println(name);
             out.flush();
@@ -124,6 +147,8 @@ public class Servico implements Runnable {
                     fos.flush();
                 }
                 fos.close();
+                int idenUniq = sound.addMusica(name,autor,year,etiquetas);
+                out.println("Unique Identifier::" + idenUniq);
               }
         }catch(Exception e){}
     }

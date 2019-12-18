@@ -1,36 +1,40 @@
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SoundSky{
 
     private Map<String,User> users;
+    private Map<Integer,Musica> musicas;
     ReentrantLock lock;
-
+    
     public SoundSky(){
-        
-        this.users = new HashMap<String, User>();
+
+        this.users = new HashMap<String,User>();
+        this.musicas = new HashMap<Integer,Musica>();
         lock = new ReentrantLock();
     }
 
     public boolean checkUser(String username, char[] password){
-        
+
         if(this.users.containsKey(username)){
-            
+
             lock.lock();
-            
+
             if (isPasswordCorrect(this.users.get(username).getPassword(),password) && this.users.get(username).getStatus() == 0){
                 this.users.get(username).setStatus(1);
-            
+
                 lock.unlock();
-                
+
                 return true;
             }
-            
+
             lock.unlock();
         }
-        
+
         return false;
 
     }
@@ -41,7 +45,7 @@ public class SoundSky{
         User aux2 = new User("rodolfo","crl2",0);
         User aux3 = new User("rafael","crl3",0);
         User aux4 = new User("pedro","crl4",0);
-     
+
         this.users.put("bruno",aux1);
         this.users.put("rodolfo",aux2);
         this.users.put("rafael",aux3);
@@ -51,18 +55,18 @@ public class SoundSky{
     public boolean addUser(String username,String password){
 
         User aux = new User(username,password,0);
-    
+
         if(!this.users.containsKey(username)){
             this.users.put(username,aux);
             return true;
         }
-        
+
         return false;
-    
+
     }
-    
+
     private static boolean isPasswordCorrect(char[] input,char[] correctPassword) {
-    
+
         boolean isCorrect = true;
 
         if (input.length != correctPassword.length || input == null) {
@@ -83,5 +87,14 @@ public class SoundSky{
             users.get(username).setStatus(0);
         }
         lock.unlock();
+    }
+
+    public int addMusica(String nome,String autor,String ano,List<String> etiquetas){
+        lock.lock();
+        int idenUniq = musicas.size() + 1;
+        Musica insert = new Musica(nome,autor,Integer.parseInt(ano),etiquetas,idenUniq);
+        musicas.put(idenUniq,insert);
+        lock.unlock();
+        return idenUniq;
     }
 }
