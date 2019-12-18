@@ -37,7 +37,6 @@ public class Cliente implements Runnable{
               System.arraycopy(buf,0,bytes,0,readNum);
 
               String sende = Base64.getEncoder().encodeToString(bytes);
-              //ot.println(bytes.length);
               ot.println(sende);
               ot.flush();
           }

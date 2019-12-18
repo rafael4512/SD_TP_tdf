@@ -67,6 +67,10 @@ public class Musica{
         return this.id;
     }
 
+    public int getDw(){
+      return this.downloads;
+    }
+
     //Sets
 
     public void setTitulo(String tit){

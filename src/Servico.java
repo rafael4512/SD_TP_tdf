@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.util.Base64;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Servico implements Runnable {
 
@@ -96,7 +97,7 @@ public class Servico implements Runnable {
               else{
                   if(etiqueta.contains("1")){etiquetas.add("POP");i++;}
                   if(etiqueta.contains("2")){etiquetas.add("ROCK");i++;}
-                  if(etiqueta.contains("3")){etiquetas.add("ROCK");i++;}
+                  if(etiqueta.contains("3")){etiquetas.add("EDM");i++;}
                   if(i==0){etiquetas.add("NULL");}
               }
            }catch(Exception e){}
@@ -129,20 +130,14 @@ public class Servico implements Runnable {
             out.flush();
             String confirmation = in.readLine();
             if(confirmation.equals("music data incoming")){
-                //                                             //
-                //----- TRATAR DE COMO FAZER AS ETIQUETAS -----//
-                //                                             //
                 File someFile = new File("musicas/"+name+".mp3");
                 FileOutputStream fos = new FileOutputStream(someFile);
                 while(true){
-                    //String size = in.readLine();
 
                     String data = in.readLine();
                     if(data.equals("sending Finished"))
                       break;
-                    //int sz = Integer.parseInt(size);
                     byte[] decodedString = Base64.getDecoder().decode(data.getBytes("UTF-8"));
-
                     fos.write(decodedString);
                     fos.flush();
                 }
@@ -153,6 +148,56 @@ public class Servico implements Runnable {
         }catch(Exception e){}
     }
 
+    public void sBe(BufferedReader in, PrintWriter out){
+        out.println("Choose which tag to search for");
+        out.println("1-POP 2-ROCK 3-EDM (separated by space)");
+        out.flush();
+        int chosen=0;
+        try{
+          chosen = Integer.parseInt(in.readLine());
+        }catch(Exception e){}
+        String tag;
+
+        switch(chosen){
+          case 1 :
+              tag = "POP";
+              break;
+          case 2 :
+              tag = "ROCK";
+              break;
+          case 3 :
+              tag = "EDM";
+              break;
+          default :
+              tag = "NULL";
+        }
+
+        List<String> print = sound.prcEtiqueta(tag);
+		    Iterator<String> it = print.iterator();
+		    while(it.hasNext()){
+			     out.println(it.next());
+           out.flush();
+        }
+
+        out.println("<----- Which song would you like to download? ----->");
+        out.flush();
+        String input;
+        try{
+          input = in.readLine();
+        }catch(Exception e){}
+
+        //Tratar de fazer a transferencia do ficheiro
+        //
+        //
+        /////////////////////////////////////////////
+
+        k = 1;
+    }
+
+    public void sBi(){}
+
+    public void sBa(){}
+
     public void menuLogin(PrintWriter out){
         out.println("1-Login");
         out.println("2-Register");
@@ -162,9 +207,18 @@ public class Servico implements Runnable {
 
     public void menu2(PrintWriter out){
         out.println("1-Upload music");
+        out.println("2-Search music");
         out.println("0-Logout");
         out.flush();
     }
+
+    public void menuProcura(PrintWriter out){
+      out.println("1-Procura por Identificador Unico");
+      out.println("2-Procura por Etiqueta");
+      out.println("3-Procura por Autor");
+      out.flush();
+    }
+
     public void run(){
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
@@ -178,10 +232,23 @@ public class Servico implements Runnable {
 
                 String s = in.readLine();   /** Le o que foi escrito no socket do cliente **/
 
+
                 if (s==null || s.equals("0")){
                     sound.cS(name);/** Se o cliente escreveu Quit fecha-se a conexao com o cliente **/
                     break;
                 }
+
+                if(s.equals("1") && k==11){ // Procura por Identificador
+                  sBi();
+                }
+                if(s.equals("2") && k==11){ // Procura por Etiqueta
+                  sBe(in,out);
+                }
+                if(s.equals("3") && k==11){ // Procura por Autor
+                  sBa();
+                }
+
+                if(s.equals("2") && k==1){k=11;menuProcura(out);}
 
                 if(s.equals("1") && k==1){
                     receiveMusic(in,out);

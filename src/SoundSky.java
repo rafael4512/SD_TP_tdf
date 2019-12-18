@@ -3,6 +3,7 @@ import java.util.Map;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SoundSky{
@@ -10,7 +11,7 @@ public class SoundSky{
     private Map<String,User> users;
     private Map<Integer,Musica> musicas;
     ReentrantLock lock;
-    
+
     public SoundSky(){
 
         this.users = new HashMap<String,User>();
@@ -96,5 +97,21 @@ public class SoundSky{
         musicas.put(idenUniq,insert);
         lock.unlock();
         return idenUniq;
+    }
+
+    public List<String> prcEtiqueta(String tag){
+        List<String> yeet = new ArrayList<>();
+        yeet.add("Unique ID<----->Song Title<----->Song Author<----->Release Year<----->Number of downloads");
+        Iterator it = musicas.entrySet().iterator();
+        while(it.hasNext())
+        {
+          Map.Entry pair = (Map.Entry) it.next();
+          Musica inspect = (Musica) pair.getValue();
+
+          List<String> tags = inspect.getEtiquetas();
+          if(tags.contains(tag))
+            yeet.add(""+inspect.getId()+"<----->"+inspect.getTitulo()+"<----->"+inspect.getArtista()+"<----->"+inspect.getAno()+"<----->"+inspect.getDw());
+        }
+        return yeet;
     }
 }
