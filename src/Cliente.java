@@ -21,6 +21,25 @@ public class Cliente implements Runnable{
         this.ot = ot;
     }
 
+    public void receive(){
+        try{
+            String uname = pw.readLine();
+            String mname = pw.readLine();
+            File music = new File("downloads/"+uname+"/"+mname+".mp3");
+            FileOutputStream stream = new FileOutputStream(music);
+            while(true){
+                String data = pw.readLine();
+                if(data.equals("Sending Finished"))
+                  break;
+
+                byte[] decodedString = Base64.getDecoder().decode(data.getBytes("UTF-8"));
+                stream.write(decodedString);
+                stream.flush();
+            }
+            stream.close();
+        }catch(Exception e){}
+    }
+
     public void send(){
       try{
           String name = pw.readLine();
@@ -50,6 +69,10 @@ public class Cliente implements Runnable{
             try{
               String message = pw.readLine();
               switch(message){
+                case "Music information starting" :
+                    this.receive();
+                    break;
+
                 case "ready for receival." :
                     this.send();
                     break;

@@ -17,14 +17,29 @@ public class SoundSky implements Serializable{
 
         this.users = new HashMap<String,User>();
 
-        File f = new File("users.ser");
+        File dirS = new File("saves");
+        if (!dirS.exists()) {
+            dirS.mkdir();
+        }
+
+        File dirD = new File("downloads");
+        if (!dirD.exists()) {
+            dirD.mkdir();
+        }
+
+        File dirM = new File("musicas");
+        if (!dirM.exists()) {
+            dirM.mkdir();
+        }
+
+        File f = new File("saves/users.ser");
         if(f.exists() && !f.isDirectory()) {
             loadUsers();
         }
 
         this.musicas = new HashMap<Integer,Musica>();
 
-        File g = new File("musicas.ser");
+        File g = new File("saves/musicas.ser");
         if(g.exists() && !g.isDirectory()) {
             loadMusics();
         }
@@ -37,7 +52,7 @@ public class SoundSky implements Serializable{
     public void loadUsers(){
 
         try {
-            FileInputStream fileIn = new FileInputStream("users.ser");
+            FileInputStream fileIn = new FileInputStream("saves/users.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             @SuppressWarnings("unchecked") HashMap<String,User> parse =
                 (HashMap<String,User>)in.readObject();
@@ -53,7 +68,7 @@ public class SoundSky implements Serializable{
     public void loadMusics(){
 
         try {
-            FileInputStream fileIn = new FileInputStream("musicas.ser");
+            FileInputStream fileIn = new FileInputStream("saves/musicas.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             @SuppressWarnings("unchecked") HashMap<Integer,Musica> parse =
                 (HashMap<Integer,Musica>)in.readObject();
@@ -71,7 +86,7 @@ public class SoundSky implements Serializable{
 
         try{
             FileOutputStream fos =
-                new FileOutputStream("users.ser");
+                new FileOutputStream("saves/users.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(this.users);
             oos.close();
@@ -87,7 +102,7 @@ public class SoundSky implements Serializable{
 
         try{
             FileOutputStream fos =
-                new FileOutputStream("musicas.ser");
+                new FileOutputStream("saves/musicas.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(this.musicas);
             oos.close();
@@ -173,7 +188,7 @@ public class SoundSky implements Serializable{
 
     public List<String> prcEtiqueta(String tag){
         List<String> yeet = new ArrayList<>();
-        yeet.add("Unique ID<----->Song Title<----->Song Author<----->Release Year<----->Number of downloads");
+        yeet.add("Unique ID<----->Song Title<----->Song Author<----->Release Year<----->Tags<----->Number of downloads");
         Iterator it = musicas.entrySet().iterator();
         while(it.hasNext())
         {
@@ -182,8 +197,28 @@ public class SoundSky implements Serializable{
 
             List<String> tags = inspect.getEtiquetas();
             if(tags.contains(tag))
-                yeet.add(""+inspect.getId()+"<----->"+inspect.getTitulo()+"<----->"+inspect.getArtista()+"<----->"+inspect.getAno()+"<----->"+inspect.getDw());
+                yeet.add(""+inspect.getId()+"<----->"+inspect.getTitulo()+"<----->"+inspect.getArtista()+"<----->"+inspect.getAno()+"<----->"+inspect.getEtiquetas()+"<----->"+inspect.getDw());
         }
         return yeet;
+    }
+
+    public Boolean checkSong(int uniqId){
+        if(musicas.containsKey(uniqId))
+            return true;
+        else
+            return false;
+    }
+
+    public Musica getMusica(int uniqId){
+      lock.lock();
+      Musica ret = new Musica(musicas.get(uniqId));
+      lock.unlock();
+      return ret;
+    }
+
+    public void incrementaDw(int uniqId){
+      Musica ms = musicas.get(uniqId);
+      ms.increment();
+      musicas.put(uniqId,ms);
     }
 }

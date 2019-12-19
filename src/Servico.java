@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.util.Base64;
 import java.util.List;
@@ -88,6 +89,37 @@ public class Servico implements Runnable {
         }
     }
 
+    public void transferMusic(int uniqId,BufferedReader in, PrintWriter out){
+        if(sound.checkSong(uniqId)){
+            //Start Transfer
+            Musica toTransfer = sound.getMusica(uniqId);
+            out.println("Music information starting");
+            out.flush();
+            out.println(this.name);
+            out.flush();
+            out.println(toTransfer.getTitulo());
+            out.flush();
+            File music = new File("musicas/"+toTransfer.getTitulo()+".mp3");
+            try{
+                InputStream targetStream = new FileInputStream(music);
+                byte[] buf = new byte[850000];
+
+                for (int readNum; (readNum = targetStream.read(buf)) != -1;){
+                    byte[] bytes = new byte[readNum];
+                    System.arraycopy(buf,0,bytes,0,readNum);
+
+                    String send = Base64.getEncoder().encodeToString(bytes);
+                    out.println(send);
+                    out.flush();
+                }
+                out.println("Sending Finished");
+                out.flush();
+
+                sound.incrementaDw(uniqId);
+            }catch(Exception e){}
+        }
+        else{out.println("Song with given ID does not exist in our database");out.flush()}
+    }
 
     public void selectEtiquetas(List<String> etiquetas, BufferedReader in, PrintWriter out){
            int i=0;
@@ -181,20 +213,22 @@ public class Servico implements Runnable {
 
         out.println("<----- Which song would you like to download? ----->");
         out.flush();
-        String input;
+        String input = "-1";
         try{
           input = in.readLine();
         }catch(Exception e){}
 
-        //Tratar de fazer a transferencia do ficheiro
-        //
-        //
-        /////////////////////////////////////////////
+        transferMusic(Integer.parseInt(input),in,out);
 
         k = 1;
     }
 
-    public void sBi(){}
+    public void sBi(BufferedReader in, PrintWriter out){
+        out.println("Please insert the Unique ID of the song you wish to download:");
+        out.flush();
+        String uniqId = in.readline();
+        transferMusic(Integer.parseInt(uniqId),in,out);
+    }
 
     public void sBa(){}
 
@@ -228,13 +262,13 @@ public class Servico implements Runnable {
 
             while (true) {
 
-                
+
                 if(k==0){menuLogin(out);}
                 if(k==1){menu2(out);}
                 if(k==2){menuProcura(out);}
-                
+
                 String s = in.readLine();   /** Le o que foi escrito no socket do cliente **/
-                
+
                 if ((s==null || s.equals("0")) && k!=2){
                     sound.cS(name);/** Se o cliente escreveu Quit fecha-se a conexao com o cliente **/
                     break;
@@ -251,7 +285,7 @@ public class Servico implements Runnable {
                 if(s.equals("2") && k==0){
                     register(in,out);
                     continue;
-                }               
+                }
                 if(s.equals("1") && k==1){
                     receiveMusic(in,out);
                     continue;
