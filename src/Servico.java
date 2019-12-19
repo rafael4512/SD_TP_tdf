@@ -216,6 +216,7 @@ public class Servico implements Runnable {
       out.println("1-Procura por Identificador Unico");
       out.println("2-Procura por Etiqueta");
       out.println("3-Procura por Autor");
+      out.println("4-Voltar atrás");
       out.flush();
     }
 
@@ -227,38 +228,44 @@ public class Servico implements Runnable {
 
             while (true) {
 
+                
                 if(k==0){menuLogin(out);}
                 if(k==1){menu2(out);}
-
+                if(k==2){menuProcura(out);}
+                
                 String s = in.readLine();   /** Le o que foi escrito no socket do cliente **/
-
-
-                if (s==null || s.equals("0")){
+                
+                if ((s==null || s.equals("0")) && k!=2){
                     sound.cS(name);/** Se o cliente escreveu Quit fecha-se a conexao com o cliente **/
                     break;
                 }
-
-                if(s.equals("1") && k==11){ // Procura por Identificador
-                  sBi();
+                if ((s==null) && k==2){
+                    sound.cS(name);
+                    break;
                 }
-                if(s.equals("2") && k==11){ // Procura por Etiqueta
-                  sBe(in,out);
-                }
-                if(s.equals("3") && k==11){ // Procura por Autor
-                  sBa();
-                }
-
-                if(s.equals("2") && k==1){k=11;menuProcura(out);}
-
-                if(s.equals("1") && k==1){
-                    receiveMusic(in,out);
-                }
-
+                if((s.equals("4")) && k==2){ k=1;continue;}
                 if(s.equals("1") && k==0){
                     login(in,out);
+                    continue;
                 }
                 if(s.equals("2") && k==0){
                     register(in,out);
+                    continue;
+                }               
+                if(s.equals("1") && k==1){
+                    receiveMusic(in,out);
+                    continue;
+                }
+                if(s.equals("2") && k==1){
+                    k=2;
+                    continue;
+                }
+
+
+                if(s.equals("2") && k==2){ // Procura por Etiqueta
+                  sBe(in,out);
+                  k=1;
+                  continue;
                 }
 
                 s = "oof";
