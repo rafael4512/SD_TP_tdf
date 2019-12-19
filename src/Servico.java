@@ -116,6 +116,7 @@ public class Servico implements Runnable {
                 out.flush();
 
                 sound.incrementaDw(uniqId);
+                sound.saveMusics();
             }catch(Exception e){}
         }
         else{out.println("Song with given ID does not exist in our database");out.flush();}
@@ -176,6 +177,7 @@ public class Servico implements Runnable {
                 fos.close();
                 int idenUniq = sound.addMusica(name,autor,year,etiquetas);
                 out.println("Unique Identifier::" + idenUniq);
+                sound.saveMusics();
               }
         }catch(Exception e){}
     }
@@ -210,7 +212,7 @@ public class Servico implements Runnable {
 			     out.println(it.next());
            out.flush();
         }
-
+        
         out.println("<----- Which song would you like to download? ----->");
         out.flush();
         String input = "-1";
@@ -222,7 +224,7 @@ public class Servico implements Runnable {
     }
 
     public void sBi(BufferedReader in, PrintWriter out){
-        out.println("Please insert the Unique ID of the song you wish to download:");
+        out.println("<----- Please insert the Unique ID of the song you wish to download: ----->");
         out.flush();
         String uniqId = "-1";
         try{
@@ -232,7 +234,7 @@ public class Servico implements Runnable {
     }
 
     public void sBa(BufferedReader in, PrintWriter out){
-        out.println("Choose which author to search for:");
+        out.println("<----- Choose which author to search for: ----->");
         out.flush();
         String autor = "null";
         try{
@@ -257,24 +259,30 @@ public class Servico implements Runnable {
     }
 
     public void menuLogin(PrintWriter out){
-        out.println("1-Login");
-        out.println("2-Register");
-        out.println("0-Exit");
+        out.println("######################################");
+        out.println("##            1-Login               ##");
+        out.println("##            2-Register            ##");
+        out.println("##            0-Exit                ##");
+        out.println("######################################");
         out.flush();
     }
 
     public void menu2(PrintWriter out){
-        out.println("1-Upload music");
-        out.println("2-Search music");
-        out.println("0-Logout");
+        out.println("#############################################");
+        out.println("##            1-Upload music               ##");
+        out.println("##            2-Search music               ##");
+        out.println("##            0-Logout                     ##");
+        out.println("#############################################");
         out.flush();
     }
 
     public void menuProcura(PrintWriter out){
-      out.println("1-Procura por Identificador Unico");
-      out.println("2-Procura por Etiqueta");
-      out.println("3-Procura por Autor");
-      out.println("4-Voltar atrás");
+      out.println("############################################################");
+      out.println("##            1-Procura por Identificador Unico           ##");
+      out.println("##            2-Procura por Etiqueta                      ##");
+      out.println("##            3-Procura por Autor                         ##");
+      out.println("##            4-Voltar atrás                              ##");
+      out.println("############################################################");
       out.flush();
     }
 

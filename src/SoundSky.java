@@ -99,7 +99,7 @@ public class SoundSky implements Serializable{
     }
 
     public void saveMusics(){
-
+        lock.lock();
         try{
             FileOutputStream fos =
                 new FileOutputStream("saves/musicas.ser");
@@ -111,7 +111,7 @@ public class SoundSky implements Serializable{
         }catch(IOException ioe){
             ioe.printStackTrace();
         }
-
+        lock.unlock();
     }
 
 
@@ -188,21 +188,24 @@ public class SoundSky implements Serializable{
 
     public List<String> prcAutor(String autor){
       List<String> yeet = new ArrayList<>();
-      yeet.add("Unique ID<----->Song Title<----->Song Creator<----->Release Year<----->Tags<----->Number of downloads");
+      yeet.add("##  Unique ID  ###  Song Title  ###  Song Creator  ###  Release Year  ###  Tags  ###  Number of downloads  ##");
       Iterator it = musicas.entrySet().iterator();
       while(it.hasNext())
       {
           Map.Entry pair = (Map.Entry) it.next();
           Musica inspect = (Musica) pair.getValue();
-          if(inspect.getArtista().equals(autor))
-              yeet.add(""+inspect.getId()+"<----->"+inspect.getTitulo()+"<----->"+inspect.getArtista()+"<----->"+inspect.getAno()+"<----->"+inspect.getEtiquetas()+"<----->"+inspect.getDw());
+          if(inspect.getArtista().equals(autor)){
+              yeet.add("##");
+              yeet.add("##   "+inspect.getId()+"  ###  "+inspect.getTitulo()+"  ###  "+inspect.getArtista()+"  ###  "+inspect.getAno()+"  ###  "+inspect.getEtiquetas()+"  ###  "+inspect.getDw()+"  ##");
+          }
       }
+      yeet.add("##");
       return yeet;
     }
 
     public List<String> prcEtiqueta(String tag){
         List<String> yeet = new ArrayList<>();
-        yeet.add("Unique ID<----->Song Title<----->Song Creator<----->Release Year<----->Tags<----->Number of downloads");
+        yeet.add("##  Unique ID  ###  Song Title  ###  Song Creator  ###  Release Year  ###  Tags  ###  Number of downloads  ##");
         Iterator it = musicas.entrySet().iterator();
         while(it.hasNext())
         {
@@ -210,9 +213,12 @@ public class SoundSky implements Serializable{
             Musica inspect = (Musica) pair.getValue();
 
             List<String> tags = inspect.getEtiquetas();
-            if(tags.contains(tag))
-                yeet.add(""+inspect.getId()+"<----->"+inspect.getTitulo()+"<----->"+inspect.getArtista()+"<----->"+inspect.getAno()+"<----->"+inspect.getEtiquetas()+"<----->"+inspect.getDw());
+            if(tags.contains(tag)){
+                yeet.add("##");
+                yeet.add("##   "+inspect.getId()+"  ###  "+inspect.getTitulo()+"  ###  "+inspect.getArtista()+"  ###  "+inspect.getAno()+"  ###  "+inspect.getEtiquetas()+"  ###  "+inspect.getDw()+"  ##");
+            }
         }
+        yeet.add("##");
         return yeet;
     }
 

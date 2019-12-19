@@ -104,7 +104,7 @@ public class Cliente implements Runnable{
         // ot escreve no otput do socket
         PrintWriter out = new PrintWriter((socket.getOutputStream()));
 
-        System.out.println("Welcome to SoundSky!");
+        System.out.println("---------Welcome to SoundSky!---------");
 
         Thread printer = new Thread(new Cliente(in,out));
         printer.start();
