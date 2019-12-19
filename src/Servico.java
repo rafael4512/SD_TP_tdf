@@ -118,7 +118,7 @@ public class Servico implements Runnable {
                 sound.incrementaDw(uniqId);
             }catch(Exception e){}
         }
-        else{out.println("Song with given ID does not exist in our database");out.flush()}
+        else{out.println("Song with given ID does not exist in our database");out.flush();}
     }
 
     public void selectEtiquetas(List<String> etiquetas, BufferedReader in, PrintWriter out){
@@ -219,18 +219,42 @@ public class Servico implements Runnable {
         }catch(Exception e){}
 
         transferMusic(Integer.parseInt(input),in,out);
-
-        k = 1;
     }
 
     public void sBi(BufferedReader in, PrintWriter out){
         out.println("Please insert the Unique ID of the song you wish to download:");
         out.flush();
-        String uniqId = in.readline();
+        String uniqId = "-1";
+        try{
+            uniqId = in.readLine();
+        }catch(Exception e){}
         transferMusic(Integer.parseInt(uniqId),in,out);
     }
 
-    public void sBa(){}
+    public void sBa(BufferedReader in, PrintWriter out){
+        out.println("Choose which author to search for:");
+        out.flush();
+        String autor = "null";
+        try{
+            autor = in.readLine();
+        }catch(Exception e){}
+
+        List<String> print = sound.prcAutor(autor);
+  		  Iterator<String> it = print.iterator();
+  		  while(it.hasNext()){
+  			     out.println(it.next());
+             out.flush();
+        }
+
+        out.println("<----- Which song would you like to download? ----->");
+        out.flush();
+        String input = "-1";
+        try{
+          input = in.readLine();
+        }catch(Exception e){}
+
+        transferMusic(Integer.parseInt(input),in,out);
+    }
 
     public void menuLogin(PrintWriter out){
         out.println("1-Login");
@@ -295,9 +319,20 @@ public class Servico implements Runnable {
                     continue;
                 }
 
+                if(s.equals("1") && k==2){ // Procura por ID
+                  sBi(in,out);
+                  k=1;
+                  continue;
+                }
 
                 if(s.equals("2") && k==2){ // Procura por Etiqueta
                   sBe(in,out);
+                  k=1;
+                  continue;
+                }
+
+                if(s.equals("3") && k==2){ // Procura por Autor
+                  sBa(in,out);
                   k=1;
                   continue;
                 }

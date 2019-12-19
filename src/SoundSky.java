@@ -186,9 +186,23 @@ public class SoundSky implements Serializable{
         return idenUniq;
     }
 
+    public List<String> prcAutor(String autor){
+      List<String> yeet = new ArrayList<>();
+      yeet.add("Unique ID<----->Song Title<----->Song Creator<----->Release Year<----->Tags<----->Number of downloads");
+      Iterator it = musicas.entrySet().iterator();
+      while(it.hasNext())
+      {
+          Map.Entry pair = (Map.Entry) it.next();
+          Musica inspect = (Musica) pair.getValue();
+          if(inspect.getArtista().equals(autor))
+              yeet.add(""+inspect.getId()+"<----->"+inspect.getTitulo()+"<----->"+inspect.getArtista()+"<----->"+inspect.getAno()+"<----->"+inspect.getEtiquetas()+"<----->"+inspect.getDw());
+      }
+      return yeet;
+    }
+
     public List<String> prcEtiqueta(String tag){
         List<String> yeet = new ArrayList<>();
-        yeet.add("Unique ID<----->Song Title<----->Song Author<----->Release Year<----->Tags<----->Number of downloads");
+        yeet.add("Unique ID<----->Song Title<----->Song Creator<----->Release Year<----->Tags<----->Number of downloads");
         Iterator it = musicas.entrySet().iterator();
         while(it.hasNext())
         {
