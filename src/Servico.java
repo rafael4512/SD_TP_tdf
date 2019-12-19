@@ -182,6 +182,29 @@ public class Servico implements Runnable {
         }catch(Exception e){}
     }
 
+    public void sBn(BufferedReader in, PrintWriter out){
+        out.println("<----- Which song would you like to search for? ----->");
+        out.flush();
+        String name="null";
+        try{
+          name = in.readLine();
+        }catch(Exception e){}
+
+        List<String> print = sound.prcNome(name);
+    		Iterator<String> it = print.iterator();
+    		while(it.hasNext()){
+    	      out.println(it.next());
+            out.flush();
+        }
+        out.println("<----- Which song would you like to download? ----->");
+        out.flush();
+        String input = "-1";
+        try{
+            input = in.readLine();
+        }catch(Exception e){}
+        transferMusic(Integer.parseInt(input),in,out);
+    }
+
     public void sBe(BufferedReader in, PrintWriter out){
         out.println("Choose which tag to search for");
         out.println("1-POP 2-ROCK 3-EDM (separated by space)");
@@ -212,7 +235,7 @@ public class Servico implements Runnable {
 			     out.println(it.next());
            out.flush();
         }
-        
+
         out.println("<----- Which song would you like to download? ----->");
         out.flush();
         String input = "-1";
@@ -234,7 +257,7 @@ public class Servico implements Runnable {
     }
 
     public void sBa(BufferedReader in, PrintWriter out){
-        out.println("<----- Choose which author to search for: ----->");
+        out.println("<----- Which author would you like to search for? ----->");
         out.flush();
         String autor = "null";
         try{
@@ -281,7 +304,8 @@ public class Servico implements Runnable {
       out.println("##            1-Procura por Identificador Unico           ##");
       out.println("##            2-Procura por Etiqueta                      ##");
       out.println("##            3-Procura por Autor                         ##");
-      out.println("##            4-Voltar atrás                              ##");
+      out.println("##            4-Procura por Nome                          ##");
+      out.println("##            5-Voltar atrás                              ##");
       out.println("############################################################");
       out.flush();
     }
@@ -309,7 +333,7 @@ public class Servico implements Runnable {
                     sound.cS(name);
                     break;
                 }
-                if((s.equals("4")) && k==2){ k=1;continue;}
+                if((s.equals("5")) && k==2){ k=1;continue;}
                 if(s.equals("1") && k==0){
                     login(in,out);
                     continue;
@@ -345,7 +369,11 @@ public class Servico implements Runnable {
                   continue;
                 }
 
-                s = "oof";
+                if(s.equals("4") && k==2){ // Procura por Autor
+                  sBn(in,out);
+                  k=1;
+                  continue;
+                }
             }
 
         }catch(IOException e){
