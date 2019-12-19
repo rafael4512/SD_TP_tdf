@@ -8,24 +8,24 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 
 public class SoundSky implements Serializable{
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
     private HashMap<String,User> users;
     private HashMap<Integer,Musica> musicas;
     ReentrantLock lock;
-    
+
     public SoundSky(){
 
         this.users = new HashMap<String,User>();
-        
-        File f = new File("users.ser"); 
-        if(f.exists() && !f.isDirectory()) { 
+
+        File f = new File("users.ser");
+        if(f.exists() && !f.isDirectory()) {
             loadUsers();
         }
 
         this.musicas = new HashMap<Integer,Musica>();
-        
-        File g = new File("musicas.ser"); 
-        if(g.exists() && !g.isDirectory()) { 
+
+        File g = new File("musicas.ser");
+        if(g.exists() && !g.isDirectory()) {
             loadMusics();
         }
 
@@ -39,7 +39,9 @@ public class SoundSky implements Serializable{
         try {
             FileInputStream fileIn = new FileInputStream("users.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            this.users = (HashMap<String,User>) in.readObject();
+            @SuppressWarnings("unchecked") HashMap<String,User> parse =
+                (HashMap<String,User>)in.readObject();
+            this.users = parse;
             in.close();
             fileIn.close();
         } catch (Exception e) {
@@ -53,7 +55,9 @@ public class SoundSky implements Serializable{
         try {
             FileInputStream fileIn = new FileInputStream("musicas.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            this.musicas = (HashMap<Integer,Musica>) in.readObject();
+            @SuppressWarnings("unchecked") HashMap<Integer,Musica> parse =
+                (HashMap<Integer,Musica>)in.readObject();
+            this.musicas = parse;
             in.close();
             fileIn.close();
         } catch (Exception e) {
