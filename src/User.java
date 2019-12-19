@@ -1,5 +1,7 @@
-public class User {
+import java.io.*;
 
+public class User implements Serializable{
+    private static final long serialVersionUID = 1L; 
     private String username;
     private char[] password;
     private int status; // 0 = está Offline || 1 =  está online

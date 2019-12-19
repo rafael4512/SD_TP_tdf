@@ -5,19 +5,96 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantLock;
+import java.io.*;
 
-public class SoundSky{
-
-    private Map<String,User> users;
-    private Map<Integer,Musica> musicas;
+public class SoundSky implements Serializable{
+    private static final long serialVersionUID = 1L; 
+    private HashMap<String,User> users;
+    private HashMap<Integer,Musica> musicas;
     ReentrantLock lock;
-
+    
     public SoundSky(){
 
         this.users = new HashMap<String,User>();
+        
+        File f = new File("users.ser"); 
+        if(f.exists() && !f.isDirectory()) { 
+            loadUsers();
+        }
+
         this.musicas = new HashMap<Integer,Musica>();
+        
+        File g = new File("musicas.ser"); 
+        if(g.exists() && !g.isDirectory()) { 
+            loadMusics();
+        }
+
+
         lock = new ReentrantLock();
+
     }
+
+    public void loadUsers(){
+
+        try {
+            FileInputStream fileIn = new FileInputStream("users.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            this.users = (HashMap<String,User>) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    public void loadMusics(){
+
+        try {
+            FileInputStream fileIn = new FileInputStream("musicas.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            this.musicas = (HashMap<Integer,Musica>) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+
+    public void saveUsers(){
+
+        try{
+            FileOutputStream fos =
+                new FileOutputStream("users.ser");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.users);
+            oos.close();
+            fos.close();
+            System.out.println("Guardou users");
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+
+    }
+
+    public void saveMusics(){
+
+        try{
+            FileOutputStream fos =
+                new FileOutputStream("musicas.ser");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.musicas);
+            oos.close();
+            fos.close();
+            System.out.println("Guardou musicas");
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+
+    }
+
 
     public boolean checkUser(String username, char[] password){
 
@@ -27,7 +104,7 @@ public class SoundSky{
 
             if (isPasswordCorrect(this.users.get(username).getPassword(),password) && this.users.get(username).getStatus() == 0){
                 this.users.get(username).setStatus(1);
-
+                saveUsers();
                 lock.unlock();
 
                 return true;
@@ -40,18 +117,6 @@ public class SoundSky{
 
     }
 
-    public void exemplo(){
-
-        User aux1 = new User("bruno","crl1",0);
-        User aux2 = new User("rodolfo","crl2",0);
-        User aux3 = new User("rafael","crl3",0);
-        User aux4 = new User("pedro","crl4",0);
-
-        this.users.put("bruno",aux1);
-        this.users.put("rodolfo",aux2);
-        this.users.put("rafael",aux3);
-        this.users.put("pedro",aux4);
-    }
 
     public boolean addUser(String username,String password){
 
@@ -59,6 +124,7 @@ public class SoundSky{
 
         if(!this.users.containsKey(username)){
             this.users.put(username,aux);
+            saveUsers();
             return true;
         }
 
@@ -86,6 +152,7 @@ public class SoundSky{
         lock.lock();
         if(username!=null){
             users.get(username).setStatus(0);
+            saveUsers();
         }
         lock.unlock();
     }
@@ -95,6 +162,7 @@ public class SoundSky{
         int idenUniq = musicas.size() + 1;
         Musica insert = new Musica(nome,autor,Integer.parseInt(ano),etiquetas,idenUniq);
         musicas.put(idenUniq,insert);
+        saveMusics();
         lock.unlock();
         return idenUniq;
     }
@@ -105,12 +173,12 @@ public class SoundSky{
         Iterator it = musicas.entrySet().iterator();
         while(it.hasNext())
         {
-          Map.Entry pair = (Map.Entry) it.next();
-          Musica inspect = (Musica) pair.getValue();
+            Map.Entry pair = (Map.Entry) it.next();
+            Musica inspect = (Musica) pair.getValue();
 
-          List<String> tags = inspect.getEtiquetas();
-          if(tags.contains(tag))
-            yeet.add(""+inspect.getId()+"<----->"+inspect.getTitulo()+"<----->"+inspect.getArtista()+"<----->"+inspect.getAno()+"<----->"+inspect.getDw());
+            List<String> tags = inspect.getEtiquetas();
+            if(tags.contains(tag))
+                yeet.add(""+inspect.getId()+"<----->"+inspect.getTitulo()+"<----->"+inspect.getArtista()+"<----->"+inspect.getAno()+"<----->"+inspect.getDw());
         }
         return yeet;
     }

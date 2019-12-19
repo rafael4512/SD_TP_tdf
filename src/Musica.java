@@ -1,8 +1,9 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.io.*;
 
-public class Musica{
-
+public class Musica implements Serializable{
+    private static final long serialVersionUID = 1L; 
     private String titulo;
     private String artista;
     private int ano;

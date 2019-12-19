@@ -5,7 +5,6 @@ public class Servidor{
     
     public static void main(String[] args) throws Exception{
         SoundSky b = new SoundSky();
-        b.exemplo();
 
         ServerSocket socket = new ServerSocket(12345);
         while (true) {
