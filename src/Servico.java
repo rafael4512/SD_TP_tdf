@@ -316,6 +316,9 @@ public class Servico implements Runnable {
 
             PrintWriter out = new PrintWriter(cliente.getOutputStream());
 
+            Thread updater = new Thread(new newSongUpdate(this.sound,out));
+            updater.start();
+
             while (true) {
 
 
