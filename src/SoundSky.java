@@ -261,7 +261,7 @@ public class SoundSky implements Serializable{
             lock.unlock();
             return true;}
         else{
-            lock.lock();
+            lock.unlock();
             return false;}
     }
 
