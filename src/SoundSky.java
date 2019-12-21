@@ -90,7 +90,7 @@ public class SoundSky implements Serializable{
 
 
     public void saveUsers(){
-
+        lock.lock();
         try{
             FileOutputStream fos =
                 new FileOutputStream("saves/users.ser");
@@ -102,7 +102,7 @@ public class SoundSky implements Serializable{
         }catch(IOException ioe){
             ioe.printStackTrace();
         }
-
+        lock.unlock();
     }
 
     public void saveMusics(){
@@ -123,11 +123,8 @@ public class SoundSky implements Serializable{
 
 
     public boolean checkUser(String username, char[] password){
-
+        lock.lock();
         if(this.users.containsKey(username)){
-
-            lock.lock();
-
             if (isPasswordCorrect(this.users.get(username).getPassword(),password) && this.users.get(username).getStatus() == 0){
                 this.users.get(username).setStatus(1);
                 saveUsers();
@@ -135,7 +132,6 @@ public class SoundSky implements Serializable{
 
                 return true;
             }
-
             lock.unlock();
         }
 
@@ -147,18 +143,19 @@ public class SoundSky implements Serializable{
     public boolean addUser(String username,String password){
 
         User aux = new User(username,password,0);
-
+        lock.lock();
         if(!this.users.containsKey(username)){
             this.users.put(username,aux);
             saveUsers();
+            lock.unlock();
             return true;
         }
-
+        lock.unlock();
         return false;
 
     }
 
-    private static boolean isPasswordCorrect(char[] input,char[] correctPassword) {
+    private static boolean isPasswordCorrect(char[] input,char[] correctPassword) {//Basta usar o .equals, pois este já verifica se a string é vazia
 
         boolean isCorrect = true;
 
@@ -200,6 +197,7 @@ public class SoundSky implements Serializable{
         List<String> yeet = new ArrayList<>();
         yeet.add("##");
         yeet.add("##  Unique ID  ###  Song Title  ###  Song Creator  ###  Release Year  ###  Tags  ###  Number of downloads  ##");
+        lock.lock();
         Iterator it = musicas.entrySet().iterator();
         while(it.hasNext())
         {
@@ -210,6 +208,7 @@ public class SoundSky implements Serializable{
                 yeet.add("##   "+inspect.getId()+"  ###  "+inspect.getTitulo()+"  ###  "+inspect.getArtista()+"  ###  "+inspect.getAno()+"  ###  "+inspect.getEtiquetas()+"  ###  "+inspect.getDw()+"  ##");
             }
         }
+        lock.unlock();
         yeet.add("##");
         return yeet;
     }
@@ -218,6 +217,7 @@ public class SoundSky implements Serializable{
       List<String> yeet = new ArrayList<>();
       yeet.add("##");
       yeet.add("##  Unique ID  ###  Song Title  ###  Song Creator  ###  Release Year  ###  Tags  ###  Number of downloads  ##");
+      lock.lock();
       Iterator it = musicas.entrySet().iterator();
       while(it.hasNext())
       {
@@ -228,6 +228,7 @@ public class SoundSky implements Serializable{
               yeet.add("##   "+inspect.getId()+"  ###  "+inspect.getTitulo()+"  ###  "+inspect.getArtista()+"  ###  "+inspect.getAno()+"  ###  "+inspect.getEtiquetas()+"  ###  "+inspect.getDw()+"  ##");
           }
       }
+      lock.unlock();
       yeet.add("##");
       return yeet;
     }
@@ -236,6 +237,7 @@ public class SoundSky implements Serializable{
         List<String> yeet = new ArrayList<>();
         yeet.add("##");
         yeet.add("##  Unique ID  ###  Song Title  ###  Song Creator  ###  Release Year  ###  Tags  ###  Number of downloads  ##");
+        lock.lock();
         Iterator it = musicas.entrySet().iterator();
         while(it.hasNext())
         {
@@ -248,28 +250,34 @@ public class SoundSky implements Serializable{
                 yeet.add("##   "+inspect.getId()+"  ###  "+inspect.getTitulo()+"  ###  "+inspect.getArtista()+"  ###  "+inspect.getAno()+"  ###  "+inspect.getEtiquetas()+"  ###  "+inspect.getDw()+"  ##");
             }
         }
+        lock.unlock();
         yeet.add("##");
         return yeet;
     }
 
     public Boolean checkSong(int uniqId){
-        if(musicas.containsKey(uniqId))
-            return true;
-        else
-            return false;
+        lock.lock();
+        if(musicas.containsKey(uniqId)){
+            lock.unlock();
+            return true;}
+        else{
+            lock.lock();
+            return false;}
     }
 
     public Musica getMusica(int uniqId){
-      lock.lock();
-      Musica ret = new Musica(musicas.get(uniqId));
-      lock.unlock();
-      return ret;
+        lock.lock();
+        Musica ret = new Musica(musicas.get(uniqId));
+        lock.unlock();
+        return ret;
     }
 
     public void incrementaDw(int uniqId){
-      Musica ms = musicas.get(uniqId);
-      ms.increment();
-      musicas.put(uniqId,ms);
+        lock.lock(); //Se calhar este lock não é necessário, pois o increment() já bloqueia a música
+        Musica ms = musicas.get(uniqId);
+        ms.increment();
+        musicas.put(uniqId,ms);
+        lock.unlock();
     }
 
     public int getSongValue(){return this.songValue;}

@@ -32,24 +32,24 @@ public class Servico implements Runnable {
         String usr = null;
         try{
             while(usr==null){
-                out.println("Username: ");
+                out.println("Please enter your new Username:");
                 out.flush();
                 usr = in.readLine();
             }
             while(psw==null){
-                out.println("Password:");
+                out.println("Please enter your new Password:");
                 out.flush();
                 psw = in.readLine();
             }
 
             if(sound.addUser(usr,psw)){
-                out.println("User registered");
+                out.println("Your account has been successfully created!");
                 out.flush();
                 File newDir = new File("downloads/" + usr);
                 newDir.mkdir();
             }
             else{
-                out.println("Username is already in use");
+                out.println("That Username is already in use.");
                 out.flush();
             }
         }catch(IOException e){
@@ -63,25 +63,25 @@ public class Servico implements Runnable {
         String usr = null;
         try{
             while(usr==null){
-                out.println("Username: ");
+                out.println("Please enter your Username:");
                 out.flush();
                 usr = in.readLine();
             }
             while(psw==null){
-                out.println("Password:");
+                out.println("Please enter your Password:");
                 out.flush();
                 psw = in.readLine();
             }
 
             if(sound.checkUser(usr,psw.toCharArray())){
                 name = usr;
-                out.println("Welcome");
+                out.println("Welcome " + usr);
                 out.flush();
                 k=1;
             }
 
             else{
-                out.println("Wrong username or password");
+                out.println("The Username/Password you inserted is/are incorrect.");
                 out.flush();
             }
         }catch(IOException e){
@@ -138,23 +138,23 @@ public class Servico implements Runnable {
 
     public void receiveMusic(BufferedReader in, PrintWriter out){
         try{
-            out.println("Song name:");
+            out.println("Please enter the song name:");
             out.flush();
             String name = in.readLine();
 
-            out.println("Song year:");
+            out.println("Please enter the song year:");
             out.flush();
             String year = in.readLine();
 
-            out.println("Author:");
+            out.println("Please enter the author of the song:");
             out.flush();
             String autor = in.readLine();
 
             List<String> etiquetas = new ArrayList<>();
 
-            out.println("Etiquetas:");
+            out.println("Please select the Tags for this song:");
             out.flush();
-            out.println("1-POP 2-ROCK 3-EDM (separated by space)");
+            out.println("1-POP 2-ROCK 3-EDM (Separate the tags using a space)");
             out.flush();
             selectEtiquetas(etiquetas,in,out);
 
@@ -183,7 +183,7 @@ public class Servico implements Runnable {
     }
 
     public void sBn(BufferedReader in, PrintWriter out){
-        out.println("<----- Which song would you like to search for? ----->");
+        out.println("## Which name would you like to search for? ##");
         out.flush();
         String name="null";
         try{
@@ -196,18 +196,20 @@ public class Servico implements Runnable {
     	      out.println(it.next());
             out.flush();
         }
-        out.println("<----- Which song would you like to download? ----->");
+        out.println("## Which song would you like to download? ##");
         out.flush();
         String input = "-1";
         try{
             input = in.readLine();
         }catch(Exception e){}
         transferMusic(Integer.parseInt(input),in,out);
+        out.println("## Song Downloaded ##");
+        out.flush();
     }
 
     public void sBe(BufferedReader in, PrintWriter out){
-        out.println("Choose which tag to search for");
-        out.println("1-POP 2-ROCK 3-EDM (separated by space)");
+        out.println("## Please select the Tags you wish to search ##");
+        out.println("1-POP 2-ROCK 3-EDM (Separate the tags using a space)");
         out.flush();
         int chosen=0;
         try{
@@ -236,7 +238,7 @@ public class Servico implements Runnable {
            out.flush();
         }
 
-        out.println("<----- Which song would you like to download? ----->");
+        out.println("## Which song would you like to download? ##");
         out.flush();
         String input = "-1";
         try{
@@ -244,20 +246,24 @@ public class Servico implements Runnable {
         }catch(Exception e){}
 
         transferMusic(Integer.parseInt(input),in,out);
+        out.println("## Song Downloaded ##");
+        out.flush();
     }
 
     public void sBi(BufferedReader in, PrintWriter out){
-        out.println("<----- Please insert the Unique ID of the song you wish to download: ----->");
+        out.println("## Please insert the Unique ID of the song you wish to download: ##");
         out.flush();
         String uniqId = "-1";
         try{
             uniqId = in.readLine();
         }catch(Exception e){}
         transferMusic(Integer.parseInt(uniqId),in,out);
+        out.println("## Song Downloaded ##");
+        out.flush();
     }
 
     public void sBa(BufferedReader in, PrintWriter out){
-        out.println("<----- Which author would you like to search for? ----->");
+        out.println("## Please insert the author name for whom you would like to search? ##");
         out.flush();
         String autor = "null";
         try{
@@ -271,7 +277,7 @@ public class Servico implements Runnable {
              out.flush();
         }
 
-        out.println("<----- Which song would you like to download? ----->");
+        out.println("## Which song would you like to download? ##");
         out.flush();
         String input = "-1";
         try{
@@ -279,34 +285,36 @@ public class Servico implements Runnable {
         }catch(Exception e){}
 
         transferMusic(Integer.parseInt(input),in,out);
+        out.println("## Song Downloaded ##");
+        out.flush();
     }
 
     public void menuLogin(PrintWriter out){
-        out.println("######################################");
-        out.println("##            1-Login               ##");
-        out.println("##            2-Register            ##");
-        out.println("##            0-Exit                ##");
-        out.println("######################################");
+        out.println("#########################################");
+        out.println("##            1-Login                  ##");
+        out.println("##            2-Register               ##");
+        out.println("##            0-Exit                   ##");
+        out.println("#########################################");
         out.flush();
     }
 
     public void menu2(PrintWriter out){
-        out.println("#############################################");
-        out.println("##            1-Upload music               ##");
-        out.println("##            2-Search music               ##");
-        out.println("##            0-Logout                     ##");
-        out.println("#############################################");
+        out.println("#########################################");
+        out.println("##            1-Upload music           ##");
+        out.println("##            2-Search music           ##");
+        out.println("##            0-Logout                 ##");
+        out.println("#########################################");
         out.flush();
     }
 
     public void menuProcura(PrintWriter out){
-      out.println("############################################################");
-      out.println("##            1-Procura por Identificador Unico           ##");
-      out.println("##            2-Procura por Etiqueta                      ##");
-      out.println("##            3-Procura por Autor                         ##");
-      out.println("##            4-Procura por Nome                          ##");
-      out.println("##            5-Voltar atrás                              ##");
-      out.println("############################################################");
+      out.println("##########################################");
+      out.println("##   1-Search using Unique Identifier   ##");
+      out.println("##       2-Search Songs by Tags         ##");
+      out.println("##          3-Search by Author          ##");
+      out.println("##           4-Search by Name           ##");
+      out.println("##             5-Go Back                ##");
+      out.println("##########################################");
       out.flush();
     }
 
