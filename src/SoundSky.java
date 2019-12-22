@@ -199,10 +199,10 @@ public class SoundSky implements Serializable{
     }
 
     //método para adicionar música ao hashmap de músicas
-    public int addMusica(String nome,String autor,String ano,List<String> etiquetas){
+    public int addMusica(String nome,String autor,String ano,List<String> etiquetas,String filename){
         lock.lock();
         int idenUniq = musicas.size() + 1;
-        Musica insert = new Musica(nome,autor,Integer.parseInt(ano),etiquetas,idenUniq);
+        Musica insert = new Musica(nome,autor,Integer.parseInt(ano),etiquetas,idenUniq,filename);
         musicas.put(idenUniq,insert);
         saveMusics();
         lock.unlock();
@@ -212,14 +212,14 @@ public class SoundSky implements Serializable{
     //método para notificar sobre a adicação de uma música nova
     public void newSongUpdater(String nome,String autor){
       lock.lock();
+      this.lastSongA = autor;
+      this.lastSongN = nome;
 
       if(this.songValue < 254)
         this.songValue+=1;
       else
         this.songValue = 0;
 
-      this.lastSongA = autor;
-      this.lastSongN = nome;
       lock.unlock();
     }
 

@@ -11,28 +11,28 @@ public class Musica implements Serializable{
     private List<String> etiquetas;
     private int id;
     private int downloads;
-    ReentrantLock lock;
+    private String filename;
 
     //construtor de uma musica por omissão
     public Musica(){
 
         this.titulo = "";
         this.artista = "";
+        this.filename = "";
         this.ano = 0;
         this.etiquetas = new ArrayList<String>();
         this.id = -1;
-        lock = new ReentrantLock();
     }
 
     //construtor de uma música por atribuição
-    public Musica(String tit,String art, int x,List<String> eti,int idUniq){
+    public Musica(String tit,String art, int x,List<String> eti,int idUniq,String filename){
 
         this.titulo = tit;
         this.artista = art;
         this.ano = x;
         this.etiquetas = eti;
         this.id = idUniq;
-        lock = new ReentrantLock();
+        this.filename = filename;
     }
 
     //construtor cópia de uma música
@@ -43,7 +43,7 @@ public class Musica implements Serializable{
         this.ano = m.getAno();
         this.etiquetas = m.getEtiquetas();
         this.id = m.getId();
-        lock = new ReentrantLock();
+        this.filename = m.getFilename();
     }
 
     //Gets
@@ -83,6 +83,11 @@ public class Musica implements Serializable{
       return this.downloads;
     }
 
+    //get do nome do ficheiro onde está guardada a música
+    public String getFilename(){
+        return this.filename;
+    }
+
     //Sets
 
     //set do título da música
@@ -113,6 +118,11 @@ public class Musica implements Serializable{
     public void setId(int x){
 
         this.id = x;
+    }
+
+    //set do nome do ficheiro onde está guardada a música
+    public void setFilename(String f){
+        this.filename = f;
     }
 
     //clone de uma música

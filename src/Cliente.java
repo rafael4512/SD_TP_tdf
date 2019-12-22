@@ -26,8 +26,8 @@ public class Cliente implements Runnable{
     public void receive(){
         try{
             String uname = pw.readLine();
-            String mname = pw.readLine();
-            File music = new File("downloads/"+uname+"/"+mname+".mp3");
+            String fname = pw.readLine();
+            File music = new File("downloads/"+uname+"/"+fname);
             FileOutputStream stream = new FileOutputStream(music);
             while(true){
                 String data = pw.readLine();
@@ -46,7 +46,8 @@ public class Cliente implements Runnable{
     public void send(){
       try{
           String name = pw.readLine();
-          String path = "from/"+name+".mp3";
+          //String path = "from/"+name;
+          String path = name;
           File music = new File(path);
           InputStream targetStream = new FileInputStream(music);
           byte[] buf = new byte[850000];

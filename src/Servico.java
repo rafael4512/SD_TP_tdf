@@ -101,9 +101,9 @@ public class Servico implements Runnable {
             out.flush();
             out.println(this.name);
             out.flush();
-            out.println(toTransfer.getTitulo());
+            out.println(toTransfer.getFilename());
             out.flush();
-            File music = new File("musicas/"+toTransfer.getTitulo()+".mp3");
+            File music = new File("musicas/"+toTransfer.getFilename());
             try{
                 InputStream targetStream = new FileInputStream(music);
                 byte[] buf = new byte[850000];
@@ -164,12 +164,25 @@ public class Servico implements Runnable {
             out.flush();
             selectEtiquetas(etiquetas,in,out);
 
+            out.println("Please enter the path of the location of the file you wish to upload:");
+            out.flush();
+            String pathF = in.readLine();
+            //String extension = FilenameUtils.getExtension(pathF);
+            String extension = "";
+
+            int i = pathF.lastIndexOf('.');
+            if (i > 0) {
+                extension = pathF.substring(i+1);
+            }
+
+            String filename = name+"."+extension;
+
             out.println("ready for receival.");
-            out.println(name);
+            out.println(pathF);
             out.flush();
             String confirmation = in.readLine();
             if(confirmation.equals("music data incoming")){
-                File someFile = new File("musicas/"+name+".mp3");
+                File someFile = new File("musicas/"+ filename);
                 FileOutputStream fos = new FileOutputStream(someFile);
                 while(true){
 
@@ -181,7 +194,7 @@ public class Servico implements Runnable {
                     fos.flush();
                 }
                 fos.close();
-                int idenUniq = sound.addMusica(name,autor,year,etiquetas);
+                int idenUniq = sound.addMusica(name,autor,year,etiquetas,filename);
                 out.println("Unique Identifier::" + idenUniq);
                 sound.saveMusics();
                 sound.newSongUpdater(name,autor);
