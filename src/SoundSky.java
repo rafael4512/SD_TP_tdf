@@ -41,6 +41,10 @@ public class SoundSky implements Serializable{
             loadUsers();
         }
 
+        if(this.users.size() > 0) {
+            putUsersOffline();
+        }
+
         this.musicas = new HashMap<Integer,Musica>();
 
         File g = new File("saves/musicas.ser");
@@ -55,7 +59,12 @@ public class SoundSky implements Serializable{
         lock = new ReentrantLock();
 
     }
-
+    public void putUsersOffline(){
+    
+        for (Map.Entry<String, User> usr : this.users.entrySet()){
+           usr.getValue().setStatus(0);
+        }
+    }
     public void loadUsers(){
 
         try {
