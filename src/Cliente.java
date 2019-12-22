@@ -15,6 +15,7 @@ public class Cliente implements Runnable{
     private BufferedReader pw;
     private PrintWriter ot;
     private static int k = 0;
+    private static int sair = 0;
 
     public Cliente(BufferedReader pw,PrintWriter ot){
         this.pw = pw;
@@ -85,8 +86,10 @@ public class Cliente implements Runnable{
                     }
               }
             }catch(Exception e){
+                this.sair=1;
                 System.out.println("Exit");
                 Thread.currentThread().interrupt();
+                break;
             }
         }
     }
@@ -112,7 +115,7 @@ public class Cliente implements Runnable{
         while( true ){
 
             String s = buffer.readLine();       //Le o que foi escrito no System.in
-            if(s==null || s.equals("0")){ // Se o cliente escreve Quit o cliente fecha
+            if(sair==1 || s==null|| s.equals("0") ){ // Se o cliente escreve Quit o cliente fecha
                 k=1;
                 break;
             }
