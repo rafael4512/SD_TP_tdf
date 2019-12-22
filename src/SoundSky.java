@@ -113,7 +113,6 @@ public class SoundSky implements Serializable{
             oos.writeObject(this.users);
             oos.close();
             fos.close();
-            System.out.println("Guardou users");
         }catch(IOException ioe){
             ioe.printStackTrace();
         }
@@ -130,7 +129,6 @@ public class SoundSky implements Serializable{
             oos.writeObject(this.musicas);
             oos.close();
             fos.close();
-            System.out.println("Guardou musicas");
         }catch(IOException ioe){
             ioe.printStackTrace();
         }
@@ -238,6 +236,25 @@ public class SoundSky implements Serializable{
                 yeet.add("##");
                 yeet.add("##   "+inspect.getId()+"  ###  "+inspect.getTitulo()+"  ###  "+inspect.getArtista()+"  ###  "+inspect.getAno()+"  ###  "+inspect.getEtiquetas()+"  ###  "+inspect.getDw()+"  ##");
             }
+        }
+        lock.unlock();
+        yeet.add("##");
+        return yeet;
+    }
+
+    //Método que retorna todas as músicas existentes no sistema
+    public List<String> list(){
+        List<String> yeet = new ArrayList<>();
+        yeet.add("##");
+        yeet.add("##  Unique ID  ###  Song Title  ###  Song Creator  ###  Release Year  ###  Tags  ###  Number of downloads  ##");
+        lock.lock();
+        Iterator it = musicas.entrySet().iterator();
+        while(it.hasNext())
+        {
+            Map.Entry pair = (Map.Entry) it.next();
+            Musica inspect = (Musica) pair.getValue();
+            yeet.add("##");
+            yeet.add("##   "+inspect.getId()+"  ###  "+inspect.getTitulo()+"  ###  "+inspect.getArtista()+"  ###  "+inspect.getAno()+"  ###  "+inspect.getEtiquetas()+"  ###  "+inspect.getDw()+"  ##");
         }
         lock.unlock();
         yeet.add("##");

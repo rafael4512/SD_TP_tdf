@@ -202,6 +202,16 @@ public class Servico implements Runnable {
         }catch(Exception e){}
     }
 
+    //método para listar todas as músicas existentes no sistema
+    public void listSongs(PrintWriter out){
+        List<String> print = sound.list();
+            Iterator<String> it = print.iterator();
+            while(it.hasNext()){
+              out.println(it.next());
+            out.flush();
+        }
+    }
+
     //método para procurar música por nome
     public void sBn(BufferedReader in, PrintWriter out){
         out.println("## Which name would you like to search for? ##");
@@ -340,7 +350,8 @@ public class Servico implements Runnable {
       out.println("##       2-Search Songs by Tags         ##");
       out.println("##          3-Search by Author          ##");
       out.println("##           4-Search by Name           ##");
-      out.println("##             5-Go Back                ##");
+      out.println("##           5-List all Songs           ##");
+      out.println("##             6-Go Back                ##");
       out.println("##########################################");
       out.flush();
     }
@@ -371,7 +382,7 @@ public class Servico implements Runnable {
                     sound.cS(name);
                     break;
                 }
-                if((s.equals("5")) && k==2){ k=1;continue;}
+                if((s.equals("6")) && k==2){ k=1;continue;}
                 if(s.equals("1") && k==0){
                     login(in,out);
                     continue;
@@ -409,6 +420,12 @@ public class Servico implements Runnable {
 
                 if(s.equals("4") && k==2){ // Procura por Autor
                   sBn(in,out);
+                  k=1;
+                  continue;
+                }
+
+                if(s.equals("5") && k==2){ // Lista as músicas do sistema
+                  listSongs(out);
                   k=1;
                   continue;
                 }
