@@ -25,14 +25,13 @@ public class newSongUpdate implements Runnable{
 
   public void run(){
       while(true){
-        if(prevalue != instance.getSongValue()){
-            String name = instance.getNewSongName();
-            String autor = instance.getNewSongAuthor();
-            prevalue = instance.getSongValue();
+        int val = this.instance.getSongValue();
+        if(prevalue != val){
+            String name = this.instance.getNewSongName();
+            String autor = this.instance.getNewSongAuthor();
+            prevalue = val;
             out.println("##");
-            out.println("#####################################################");
             out.println("##     New music added! "+name+" by "+autor+"!     ##");
-            out.println("#####################################################");
             out.println("##");
             out.flush();
         }

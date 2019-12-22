@@ -178,6 +178,7 @@ public class Servico implements Runnable {
                 int idenUniq = sound.addMusica(name,autor,year,etiquetas);
                 out.println("Unique Identifier::" + idenUniq);
                 sound.saveMusics();
+                sound.newSongUpdater(name,autor);
               }
         }catch(Exception e){}
     }
@@ -329,7 +330,6 @@ public class Servico implements Runnable {
 
             while (true) {
 
-
                 if(k==0){menuLogin(out);}
                 if(k==1){menu2(out);}
                 if(k==2){menuProcura(out);}
@@ -400,6 +400,4 @@ public class Servico implements Runnable {
             catch(IOException e) { System.out.println(e);}
         }
     }
-
-
 }

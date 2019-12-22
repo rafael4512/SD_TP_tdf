@@ -13,9 +13,9 @@ public class SoundSky implements Serializable{
     private HashMap<Integer,Musica> musicas;
     ReentrantLock lock;
     //--------------------------------------//
-    private String lastSongN;
-    private String lastSongA;
-    private int songValue;
+    private volatile String lastSongN;
+    private volatile String lastSongA;
+    private volatile int songValue;
 
     public SoundSky(){
 
@@ -186,11 +186,21 @@ public class SoundSky implements Serializable{
         Musica insert = new Musica(nome,autor,Integer.parseInt(ano),etiquetas,idenUniq);
         musicas.put(idenUniq,insert);
         saveMusics();
-        this.songValue+=1;
-        this.lastSongA = autor;
-        this.lastSongN = nome;
         lock.unlock();
         return idenUniq;
+    }
+
+    public void newSongUpdater(String nome,String autor){
+      lock.lock();
+
+      if(this.songValue < 254)
+        this.songValue+=1;
+      else
+        this.songValue = 0;
+
+      this.lastSongA = autor;
+      this.lastSongN = nome;
+      lock.unlock();
     }
 
     public List<String> prcNome(String nome){
