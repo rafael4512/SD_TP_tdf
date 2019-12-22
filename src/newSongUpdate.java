@@ -17,12 +17,14 @@ public class newSongUpdate implements Runnable{
   private PrintWriter out;
   private int prevalue;
 
+  //construtor de notificação de músicas
   public newSongUpdate(SoundSky s,PrintWriter ot){
       instance = s;
       out = ot;
       prevalue = s.getSongValue();
   }
 
+  //método run
   public void run(){
       while(true){
         int val = this.instance.getSongValue();

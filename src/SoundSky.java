@@ -17,6 +17,7 @@ public class SoundSky implements Serializable{
     private volatile String lastSongA;
     private volatile int songValue;
 
+    //construtor do SoundSky
     public SoundSky(){
 
         this.users = new HashMap<String,User>();
@@ -59,12 +60,16 @@ public class SoundSky implements Serializable{
         lock = new ReentrantLock();
 
     }
+
+    //método para meter todos os users offline
     public void putUsersOffline(){
     
         for (Map.Entry<String, User> usr : this.users.entrySet()){
            usr.getValue().setStatus(0);
         }
     }
+
+    //método para dar load dos users guardados em ficheiro
     public void loadUsers(){
 
         try {
@@ -81,6 +86,7 @@ public class SoundSky implements Serializable{
         }
     }
 
+    //método para dar load de todas as músicas guardadas em ficheiro
     public void loadMusics(){
 
         try {
@@ -97,7 +103,7 @@ public class SoundSky implements Serializable{
         }
     }
 
-
+    //método para guardar users em ficheiro
     public void saveUsers(){
         lock.lock();
         try{
@@ -114,6 +120,7 @@ public class SoundSky implements Serializable{
         lock.unlock();
     }
 
+    //método para guardar músicas em ficheiro
     public void saveMusics(){
         lock.lock();
         try{
@@ -130,7 +137,7 @@ public class SoundSky implements Serializable{
         lock.unlock();
     }
 
-
+    //método para verificar se user existe e se está offline(metendo online se poder)
     public boolean checkUser(String username, char[] password){
         lock.lock();
         if(this.users.containsKey(username)){
@@ -148,7 +155,7 @@ public class SoundSky implements Serializable{
 
     }
 
-
+    //método para adicionar user a hash de users
     public boolean addUser(String username,String password){
 
         User aux = new User(username,password,0);
@@ -164,6 +171,7 @@ public class SoundSky implements Serializable{
 
     }
 
+    //método para verificar se password está correta
     private static boolean isPasswordCorrect(char[] input,char[] correctPassword) {//Basta usar o .equals, pois este já verifica se a string é vazia
 
         boolean isCorrect = true;
@@ -180,6 +188,7 @@ public class SoundSky implements Serializable{
         return isCorrect;
     }
 
+    //método para mudar os status de um user para offline
     public void cS(String username){
         lock.lock();
         if(username!=null){
@@ -189,6 +198,7 @@ public class SoundSky implements Serializable{
         lock.unlock();
     }
 
+    //método para adicionar música ao hashmap de músicas
     public int addMusica(String nome,String autor,String ano,List<String> etiquetas){
         lock.lock();
         int idenUniq = musicas.size() + 1;
@@ -199,6 +209,7 @@ public class SoundSky implements Serializable{
         return idenUniq;
     }
 
+    //método para notificar sobre a adicação de uma música nova
     public void newSongUpdater(String nome,String autor){
       lock.lock();
 
@@ -212,6 +223,7 @@ public class SoundSky implements Serializable{
       lock.unlock();
     }
 
+    //método para imprimir lista de músicas que queiramos procurar por nome
     public List<String> prcNome(String nome){
         List<String> yeet = new ArrayList<>();
         yeet.add("##");
@@ -232,6 +244,7 @@ public class SoundSky implements Serializable{
         return yeet;
     }
 
+    //método para imprimir lista de músicas que queiramos procurar por autor
     public List<String> prcAutor(String autor){
       List<String> yeet = new ArrayList<>();
       yeet.add("##");
@@ -252,6 +265,7 @@ public class SoundSky implements Serializable{
       return yeet;
     }
 
+    //método para imprimir lista de músicas que queiramos procurar por etiqueta
     public List<String> prcEtiqueta(String tag){
         List<String> yeet = new ArrayList<>();
         yeet.add("##");
@@ -274,6 +288,7 @@ public class SoundSky implements Serializable{
         return yeet;
     }
 
+    //método para verificar se música existe
     public Boolean checkSong(int uniqId){
         lock.lock();
         if(musicas.containsKey(uniqId)){
@@ -284,6 +299,7 @@ public class SoundSky implements Serializable{
             return false;}
     }
 
+    //método para ficar com música correspondente ao identificador
     public Musica getMusica(int uniqId){
         lock.lock();
         Musica ret = new Musica(musicas.get(uniqId));
@@ -291,6 +307,7 @@ public class SoundSky implements Serializable{
         return ret;
     }
 
+    //método para incrementar número de downloads
     public void incrementaDw(int uniqId){
         lock.lock(); //Se calhar este lock não é necessário, pois o increment() já bloqueia a música
         Musica ms = musicas.get(uniqId);
@@ -299,7 +316,10 @@ public class SoundSky implements Serializable{
         lock.unlock();
     }
 
+    //get do id da nova música
     public int getSongValue(){return this.songValue;}
+    //get do nome da nova música
     public String getNewSongName(){return this.lastSongN;}
+    //get do autor da nova música
     public String getNewSongAuthor(){return this.lastSongA;}
 }

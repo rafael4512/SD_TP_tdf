@@ -3,6 +3,7 @@ import java.net.Socket;
 
 public class Servidor{
     
+    //main do servidor
     public static void main(String[] args) throws Exception{
         SoundSky b = new SoundSky();
 

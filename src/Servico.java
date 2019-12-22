@@ -19,6 +19,7 @@ public class Servico implements Runnable {
     private int k = 0;
     private String name = null;
 
+    //construtor de um servico
     public Servico(Socket cliente,SoundSky s) {
 
         this.cliente = cliente;
@@ -26,6 +27,7 @@ public class Servico implements Runnable {
 
     }
 
+    //método de registar/verificar clientes
     private void register(BufferedReader in, PrintWriter out){
 
         String psw = null;
@@ -57,6 +59,7 @@ public class Servico implements Runnable {
         }
     }
 
+    //método para dar login a um cliente
     private void login(BufferedReader in, PrintWriter out){
 
         String psw = null;
@@ -89,6 +92,7 @@ public class Servico implements Runnable {
         }
     }
 
+    //método para transferir uma música
     public void transferMusic(int uniqId,BufferedReader in, PrintWriter out){
         if(sound.checkSong(uniqId)){
             //Start Transfer
@@ -122,6 +126,7 @@ public class Servico implements Runnable {
         else{out.println("Song with given ID does not exist in our database");out.flush();}
     }
 
+    //método para selecionar as etiquetas que pretendemos procurar nas musicas
     public void selectEtiquetas(List<String> etiquetas, BufferedReader in, PrintWriter out){
            int i=0;
            try{
@@ -136,6 +141,7 @@ public class Servico implements Runnable {
            }catch(Exception e){}
     }
 
+    //método para dar upload de uma música fornecendo informações sobre esta
     public void receiveMusic(BufferedReader in, PrintWriter out){
         try{
             out.println("Please enter the song name:");
@@ -183,6 +189,7 @@ public class Servico implements Runnable {
         }catch(Exception e){}
     }
 
+    //método para procurar música por nome
     public void sBn(BufferedReader in, PrintWriter out){
         out.println("## Which name would you like to search for? ##");
         out.flush();
@@ -208,6 +215,7 @@ public class Servico implements Runnable {
         out.flush();
     }
 
+    //método para procurar música por etiquetas
     public void sBe(BufferedReader in, PrintWriter out){
         out.println("## Please select the Tags you wish to search ##");
         out.println("1-POP 2-ROCK 3-EDM (Separate the tags using a space)");
@@ -251,6 +259,7 @@ public class Servico implements Runnable {
         out.flush();
     }
 
+    //método para procurar música por identificador
     public void sBi(BufferedReader in, PrintWriter out){
         out.println("## Please insert the Unique ID of the song you wish to download: ##");
         out.flush();
@@ -263,6 +272,7 @@ public class Servico implements Runnable {
         out.flush();
     }
 
+    //método para procurar música pelo autor
     public void sBa(BufferedReader in, PrintWriter out){
         out.println("## Please insert the author name for whom you would like to search? ##");
         out.flush();
@@ -290,6 +300,7 @@ public class Servico implements Runnable {
         out.flush();
     }
 
+    //menu login
     public void menuLogin(PrintWriter out){
         out.println("#########################################");
         out.println("##            1-Login                  ##");
@@ -299,6 +310,7 @@ public class Servico implements Runnable {
         out.flush();
     }
 
+    //menu para dar upload ou procurar músicas
     public void menu2(PrintWriter out){
         out.println("#########################################");
         out.println("##            1-Upload music           ##");
@@ -308,6 +320,7 @@ public class Servico implements Runnable {
         out.flush();
     }
 
+    //menu de procura
     public void menuProcura(PrintWriter out){
       out.println("##########################################");
       out.println("##   1-Search using Unique Identifier   ##");
@@ -319,6 +332,7 @@ public class Servico implements Runnable {
       out.flush();
     }
 
+    //método run
     public void run(){
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));

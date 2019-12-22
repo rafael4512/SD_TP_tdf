@@ -11,17 +11,18 @@ import java.io.FileOutputStream;
 
 public class Cliente implements Runnable{
 
-    //private BufferedReader sysin;
     private BufferedReader pw;
     private PrintWriter ot;
     private static int k = 0;
     private static int sair = 0;
 
+    //construtor de um cliente
     public Cliente(BufferedReader pw,PrintWriter ot){
         this.pw = pw;
         this.ot = ot;
     }
 
+    //método que recebe o ficheiro de música para uma pasta com o nome do cliente
     public void receive(){
         try{
             String uname = pw.readLine();
@@ -41,6 +42,7 @@ public class Cliente implements Runnable{
         }catch(Exception e){}
     }
 
+    //método que envia o ficheiro de música
     public void send(){
       try{
           String name = pw.readLine();
@@ -65,6 +67,7 @@ public class Cliente implements Runnable{
       }catch(Exception e){}
     }
 
+    //método run
     public void run(){
         while(k == 0){
             try{
@@ -95,6 +98,7 @@ public class Cliente implements Runnable{
     }
 
 
+    //main
     public static void main(String[] args) throws Exception{
         //Socket conectado na porta 12345 e com o IP 127.0.0.1 (localhost)
 
@@ -122,8 +126,6 @@ public class Cliente implements Runnable{
 
             out.println(s);                     // Escreve no socket o que foi lido e envia para o servidor
             out.flush();                        // Limpa a stream de dados
-            //System.System.out.println(in.readLine());  // Obtem a resposta do servidor e faz echo para o terminal
-            //(bloqueia a espera da resposta)
         }
         socket.shutdownOutput();                // Fecha o lado de escrita do socket
         socket.shutdownInput();                 // Fecha o lado de leitura do socket
