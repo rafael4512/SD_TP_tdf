@@ -52,8 +52,10 @@ public class Servico implements Runnable {
             if(sound.addUser(usr,psw)){
                 out.println("Your account has been successfully created!");
                 out.flush();
-                File newDir = new File("downloads/" + usr);
-                newDir.mkdir();
+                out.println("create file");
+                out.flush();
+                out.println(usr);
+                out.flush();
             }
             else{
                 out.println("That Username is already in use.");

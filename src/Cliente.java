@@ -25,12 +25,25 @@ public class Cliente implements Runnable{
         this.inC = inC;
         this.outC = outC;
     }
+
     //método run
     public void run(){
         while(k == 0){
             try{
               String message = pw.readLine();
               switch(message){
+                case "create file" :
+                    String name = pw.readLine();
+                    File dirD = new File("downloads");
+                    if (!dirD.exists()) {
+                        dirD.mkdir();
+                    }
+                    File dirU = new File("downloads/"+name);
+                    if(!dirU.exists())
+                      dirU.mkdir();
+                      
+                    break;
+
                 case "Music information starting" :
                     ClienteSndRcv csr = new ClienteSndRcv("receive",pw,ot,inC,outC);
                     Thread rn = new Thread(csr);

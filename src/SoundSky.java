@@ -27,11 +27,6 @@ public class SoundSky implements Serializable{
             dirS.mkdir();
         }
 
-        File dirD = new File("downloads");
-        if (!dirD.exists()) {
-            dirD.mkdir();
-        }
-
         File dirM = new File("musicas");
         if (!dirM.exists()) {
             dirM.mkdir();
@@ -63,7 +58,7 @@ public class SoundSky implements Serializable{
 
     //método para meter todos os users offline
     public void putUsersOffline(){
-    
+
         for (Map.Entry<String, User> usr : this.users.entrySet()){
            usr.getValue().setStatus(0);
         }
@@ -331,6 +326,14 @@ public class SoundSky implements Serializable{
         ms.increment();
         musicas.put(uniqId,ms);
         lock.unlock();
+    }
+
+    public void addToUser(String name,int uniqId){
+      lock.lock();
+      User change = users.get(name);
+      change.addSong(uniqId);
+      users.put(name,change);
+      lock.unlock();
     }
 
     //get do id da nova música

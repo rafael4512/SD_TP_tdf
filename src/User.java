@@ -1,9 +1,12 @@
 import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class User implements Serializable{
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
     private String username;
     private char[] password;
+    private List<Integer> downSongs;
     private int status; // 0 = está Offline || 1 =  está online
 
     //construtor por omissão de um user
@@ -18,13 +21,15 @@ public class User implements Serializable{
         this.username = username;
         this.password = password.toCharArray();
         this.status = status;
+        this.downSongs = new ArrayList<>();
     }
-    
+
     //construtor cópia de um user
     public User(User u){
         this.username=u.getUsername();
         this.password=u.getPassword();
         this.status=u.getStatus();
+        this.downSongs=u.getDownSongs();
     }
 
     //get do username
@@ -42,6 +47,11 @@ public class User implements Serializable{
         return status;
     }
 
+    //get das musicas descarregadas por parte do user
+    public List<Integer> getDownSongs(){
+        return downSongs;
+    }
+
     //set username do user
     public void setUsername(String username) {
         this.username = username;
@@ -55,6 +65,10 @@ public class User implements Serializable{
     //set dos status do user(0-offline, 1-online)
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public void addSong(int uniqId){
+        this.downSongs.add(uniqId);
     }
 
     //método toString de um user (mostrar username)

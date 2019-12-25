@@ -85,7 +85,10 @@ public class ServidorSndRcv implements Runnable{
                 out2.flush();
 
                 sound.incrementaDw(uniqId);
+                sound.addToUser(name1,uniqId);
                 sound.saveMusics();
+                sound.saveUsers();
+                
             }catch(Exception e){}
         }
         else{out.println("Song with given ID does not exist in our database");out.flush();}
