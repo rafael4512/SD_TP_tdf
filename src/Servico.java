@@ -15,14 +15,19 @@ import java.util.Iterator;
 public class Servico implements Runnable {
 
     private Socket cliente;
+    private Socket comms;
     private SoundSky sound;
     private int k = 0;
     private String name = null;
 
+    private BufferedReader in2;
+    private PrintWriter out2;
+
     //construtor de um servico
-    public Servico(Socket cliente,SoundSky s) {
+    public Servico(Socket cliente,Socket comms,SoundSky s) {
 
         this.cliente = cliente;
+        this.comms = comms;
         this.sound = s;
 
     }
@@ -92,40 +97,6 @@ public class Servico implements Runnable {
         }
     }
 
-    //método para transferir uma música
-    public void transferMusic(int uniqId,BufferedReader in, PrintWriter out){
-        if(sound.checkSong(uniqId)){
-            //Start Transfer
-            Musica toTransfer = sound.getMusica(uniqId);
-            out.println("Music information starting");
-            out.flush();
-            out.println(this.name);
-            out.flush();
-            out.println(toTransfer.getFilename());
-            out.flush();
-            File music = new File("musicas/"+toTransfer.getFilename());
-            try{
-                InputStream targetStream = new FileInputStream(music);
-                byte[] buf = new byte[850000];
-
-                for (int readNum; (readNum = targetStream.read(buf)) != -1;){
-                    byte[] bytes = new byte[readNum];
-                    System.arraycopy(buf,0,bytes,0,readNum);
-
-                    String send = Base64.getEncoder().encodeToString(bytes);
-                    out.println(send);
-                    out.flush();
-                }
-                out.println("Sending Finished");
-                out.flush();
-
-                sound.incrementaDw(uniqId);
-                sound.saveMusics();
-            }catch(Exception e){}
-        }
-        else{out.println("Song with given ID does not exist in our database");out.flush();}
-    }
-
     //método para selecionar as etiquetas que pretendemos procurar nas musicas
     public void selectEtiquetas(List<String> etiquetas, BufferedReader in, PrintWriter out){
            int i=0;
@@ -141,65 +112,51 @@ public class Servico implements Runnable {
            }catch(Exception e){}
     }
 
-    //método para dar upload de uma música fornecendo informações sobre esta
-    public void receiveMusic(BufferedReader in, PrintWriter out){
-        try{
-            out.println("Please enter the song name:");
-            out.flush();
-            String name = in.readLine();
+    public void transferMusic(int uniqId,BufferedReader in, PrintWriter out){
+        ServidorSndRcv ssr = new ServidorSndRcv("send",in,out,in2,out2,sound,uniqId,this.name);
+        Thread t = new Thread(ssr);
+        t.start();
+    }
 
-            out.println("Please enter the song year:");
-            out.flush();
-            String year = in.readLine();
+    public void receiveM(BufferedReader in,PrintWriter out){
+      try{
+          out.println("Please enter the song name:");
+          out.flush();
+          String name = in.readLine();
 
-            out.println("Please enter the author of the song:");
-            out.flush();
-            String autor = in.readLine();
+          out.println("Please enter the song year:");
+          out.flush();
+          String year = in.readLine();
 
-            List<String> etiquetas = new ArrayList<>();
+          out.println("Please enter the author of the song:");
+          out.flush();
+          String autor = in.readLine();
 
-            out.println("Please select the Tags for this song:");
-            out.flush();
-            out.println("1-POP 2-ROCK 3-EDM (Separate the tags using a space)");
-            out.flush();
-            selectEtiquetas(etiquetas,in,out);
+          List<String> etiquetas = new ArrayList<>();
 
-            out.println("Please enter the path of the location of the file you wish to upload:");
-            out.flush();
-            String pathF = in.readLine();
-            //String extension = FilenameUtils.getExtension(pathF);
-            String extension = "";
+          out.println("Please select the Tags for this song:");
+          out.flush();
+          out.println("1-POP 2-ROCK 3-EDM (Separate the tags using a space)");
+          out.flush();
+          selectEtiquetas(etiquetas,in,out);
 
-            int i = pathF.lastIndexOf('.');
-            if (i > 0) {
-                extension = pathF.substring(i+1);
-            }
+          out.println("Please enter the path of the location of the file you wish to upload:");
+          out.flush();
+          String pathF = in.readLine();
+          //String extension = FilenameUtils.getExtension(pathF);
+          String extension = "";
 
-            String filename = name+"."+extension;
+          int i = pathF.lastIndexOf('.');
+          if (i > 0) {
+              extension = pathF.substring(i+1);
+          }
 
-            out.println("ready for receival.");
-            out.println(pathF);
-            out.flush();
-            String confirmation = in.readLine();
-            if(confirmation.equals("music data incoming")){
-                File someFile = new File("musicas/"+ filename);
-                FileOutputStream fos = new FileOutputStream(someFile);
-                while(true){
+          String filename = name+"."+extension;
+          ServidorSndRcv ssr = new ServidorSndRcv("receive",in,out,in2,out2,sound,pathF,name,year,autor,etiquetas,filename);
+          Thread t = new Thread(ssr);
+          t.start();
 
-                    String data = in.readLine();
-                    if(data.equals("sending Finished"))
-                      break;
-                    byte[] decodedString = Base64.getDecoder().decode(data.getBytes("UTF-8"));
-                    fos.write(decodedString);
-                    fos.flush();
-                }
-                fos.close();
-                int idenUniq = sound.addMusica(name,autor,year,etiquetas,filename);
-                out.println("Unique Identifier::" + idenUniq);
-                sound.saveMusics();
-                sound.newSongUpdater(name,autor);
-              }
-        }catch(Exception e){}
+      }catch(Exception e){}
     }
 
     //método para listar todas as músicas existentes no sistema
@@ -360,8 +317,10 @@ public class Servico implements Runnable {
     public void run(){
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+            this.in2 = new BufferedReader(new InputStreamReader(comms.getInputStream()));
 
             PrintWriter out = new PrintWriter(cliente.getOutputStream());
+            this.out2 = new PrintWriter(comms.getOutputStream());
 
             Thread updater = new Thread(new newSongUpdate(this.sound,out));
             updater.start();
@@ -392,7 +351,7 @@ public class Servico implements Runnable {
                     continue;
                 }
                 if(s.equals("1") && k==1){
-                    receiveMusic(in,out);
+                    receiveM(in,out);
                     continue;
                 }
                 if(s.equals("2") && k==1){
@@ -440,6 +399,9 @@ public class Servico implements Runnable {
                 cliente.shutdownOutput();  /** Fecha o lado de escrita do socket do cliente **/
                 cliente.shutdownInput();   /** Fecha o lado de leitura do socket do cliente **/
                 cliente.close();           /** Fecha o socket do cliente **/
+                comms.shutdownOutput();
+                comms.shutdownInput();
+                comms.close();
             }
             catch(IOException e) { System.out.println(e);}
         }

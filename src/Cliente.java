@@ -13,61 +13,18 @@ public class Cliente implements Runnable{
 
     private BufferedReader pw;
     private PrintWriter ot;
+    private BufferedReader inC;
+    private PrintWriter outC;
     private static int k = 0;
     private static int sair = 0;
 
     //construtor de um cliente
-    public Cliente(BufferedReader pw,PrintWriter ot){
+    public Cliente(BufferedReader pw,PrintWriter ot,BufferedReader inC,PrintWriter outC){
         this.pw = pw;
         this.ot = ot;
+        this.inC = inC;
+        this.outC = outC;
     }
-
-    //método que recebe o ficheiro de música para uma pasta com o nome do cliente
-    public void receive(){
-        try{
-            String uname = pw.readLine();
-            String fname = pw.readLine();
-            File music = new File("downloads/"+uname+"/"+fname);
-            FileOutputStream stream = new FileOutputStream(music);
-            while(true){
-                String data = pw.readLine();
-                if(data.equals("Sending Finished"))
-                  break;
-
-                byte[] decodedString = Base64.getDecoder().decode(data.getBytes("UTF-8"));
-                stream.write(decodedString);
-                stream.flush();
-            }
-            stream.close();
-        }catch(Exception e){}
-    }
-
-    //método que envia o ficheiro de música
-    public void send(){
-      try{
-          String name = pw.readLine();
-          //String path = "from/"+name;
-          String path = name;
-          File music = new File(path);
-          InputStream targetStream = new FileInputStream(music);
-          byte[] buf = new byte[850000];
-
-          ot.println("music data incoming");
-          ot.flush();
-          for (int readNum; (readNum = targetStream.read(buf)) != -1;){
-              byte[] bytes = new byte[readNum];
-
-              System.arraycopy(buf,0,bytes,0,readNum);
-
-              String sende = Base64.getEncoder().encodeToString(bytes);
-              ot.println(sende);
-              ot.flush();
-          }
-        ot.println("sending Finished");
-        ot.flush();
-      }catch(Exception e){}
-    }
-
     //método run
     public void run(){
         while(k == 0){
@@ -75,11 +32,15 @@ public class Cliente implements Runnable{
               String message = pw.readLine();
               switch(message){
                 case "Music information starting" :
-                    this.receive();
+                    ClienteSndRcv csr = new ClienteSndRcv("receive",pw,ot,inC,outC);
+                    Thread rn = new Thread(csr);
+                    rn.start();
                     break;
 
                 case "ready for receival." :
-                    this.send();
+                    ClienteSndRcv csre = new ClienteSndRcv("send",pw,ot,inC,outC);
+                    Thread rne = new Thread(csre);
+                    rne.start();
                     break;
 
                 default :
@@ -103,18 +64,21 @@ public class Cliente implements Runnable{
     public static void main(String[] args) throws Exception{
         //Socket conectado na porta 12345 e com o IP 127.0.0.1 (localhost)
 
-        Socket socket = new Socket(InetAddress.getLocalHost(), 12345);
+        Socket socket1 = new Socket(InetAddress.getLocalHost(), 12345);
+        Socket socket2 = new Socket(InetAddress.getLocalHost(), 23456);
 
         // in le do input do socket
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket1.getInputStream()));
+        BufferedReader inC = new BufferedReader(new InputStreamReader(socket2.getInputStream()));
         // buffer vai ler do System.in
         BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
         // ot escreve no otput do socket
-        PrintWriter out = new PrintWriter((socket.getOutputStream()));
+        PrintWriter out = new PrintWriter((socket1.getOutputStream()));
+        PrintWriter outC = new PrintWriter((socket2.getOutputStream()));
 
         System.out.println("---------Welcome to SoundSky!---------");
 
-        Thread printer = new Thread(new Cliente(in,out));
+        Thread printer = new Thread(new Cliente(in,out,inC,outC));
         printer.start();
 
         while( true ){
@@ -128,9 +92,12 @@ public class Cliente implements Runnable{
             out.println(s);                     // Escreve no socket o que foi lido e envia para o servidor
             out.flush();                        // Limpa a stream de dados
         }
-        socket.shutdownOutput();                // Fecha o lado de escrita do socket
-        socket.shutdownInput();                 // Fecha o lado de leitura do socket
-        socket.close();                         // Fecha o socket
+        socket1.shutdownOutput();                // Fecha o lado de escrita do socket
+        socket1.shutdownInput();                 // Fecha o lado de leitura do socket
+        socket1.close();                         // Fecha o socket
+        socket2.shutdownOutput();                // Fecha o lado de escrita do socket
+        socket2.shutdownInput();                 // Fecha o lado de leitura do socket
+        socket2.close();
     }
 
 }
