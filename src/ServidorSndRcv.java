@@ -88,7 +88,7 @@ public class ServidorSndRcv implements Runnable{
                 sound.addToUser(name1,uniqId);
                 sound.saveMusics();
                 sound.saveUsers();
-                
+
             }catch(Exception e){}
         }
         else{out.println("Song with given ID does not exist in our database");out.flush();}
@@ -119,7 +119,10 @@ public class ServidorSndRcv implements Runnable{
                 out.println("Unique Identifier::" + idenUniq);
                 sound.saveMusics();
                 sound.newSongUpdater(name2,autor);
-              }
+            }else{
+              out.println("Given song name does not exist");
+              out.flush();
+            }
           }catch(Exception e){}
         }
 

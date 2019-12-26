@@ -237,6 +237,22 @@ public class SoundSky implements Serializable{
         return yeet;
     }
 
+    //método que devolve a lista de id's das musicas q tem "nome" no seu titulo
+    public List<Integer> prcNomeInt(String nome){
+        List<Integer> yeet = new ArrayList<>();
+        lock.lock();
+        Iterator it = musicas.entrySet().iterator();
+        while(it.hasNext())
+        {
+            Map.Entry pair = (Map.Entry) it.next();
+            Musica inspect = (Musica) pair.getValue();
+            if(inspect.getTitulo().contains(nome))
+                yeet.add(inspect.getId());
+        }
+        lock.unlock();
+        return yeet;
+    }
+
     //Método que retorna todas as músicas existentes no sistema
     public List<String> list(){
         List<String> yeet = new ArrayList<>();
@@ -252,6 +268,25 @@ public class SoundSky implements Serializable{
             yeet.add("##   "+inspect.getId()+"  ###  "+inspect.getTitulo()+"  ###  "+inspect.getArtista()+"  ###  "+inspect.getAno()+"  ###  "+inspect.getEtiquetas()+"  ###  "+inspect.getDw()+"  ##");
         }
         lock.unlock();
+        yeet.add("##");
+        return yeet;
+    }
+
+    //Método que retorna todas as músicas descarregadas por um "name" user
+    public List<String> listSelf(String name){
+        List<String> yeet = new ArrayList<>();
+        yeet.add("##");
+        yeet.add("##  Unique ID  ###  Song Title  ###  Song Creator  ###  Release Year  ###  Tags  ###  Number of downloads  ##");
+        //lock.lock();
+        User self = users.get(name);
+        List<Integer> selfSongs = self.getDownSongs();
+        Iterator<Integer> it = selfSongs.iterator();
+        while(it.hasNext()){
+              Musica inspect = musicas.get(it.next());
+              yeet.add("##");
+              yeet.add("##   "+inspect.getId()+"  ###  "+inspect.getTitulo()+"  ###  "+inspect.getArtista()+"  ###  "+inspect.getAno()+"  ###  "+inspect.getEtiquetas()+"  ###  "+inspect.getDw()+"  ##");
+        }
+        //lock.unlock();
         yeet.add("##");
         return yeet;
     }
@@ -277,6 +312,21 @@ public class SoundSky implements Serializable{
       return yeet;
     }
 
+    public List<Integer> prcAutorInt(String autor){
+      List<Integer> yeet = new ArrayList<>();
+      lock.lock();
+      Iterator it = musicas.entrySet().iterator();
+      while(it.hasNext())
+      {
+          Map.Entry pair = (Map.Entry) it.next();
+          Musica inspect = (Musica) pair.getValue();
+          if(inspect.getArtista().equals(autor))
+              yeet.add(inspect.getId());
+      }
+      lock.unlock();
+      return yeet;
+    }
+
     //método para imprimir lista de músicas que queiramos procurar por etiqueta
     public List<String> prcEtiqueta(String tag){
         List<String> yeet = new ArrayList<>();
@@ -298,6 +348,23 @@ public class SoundSky implements Serializable{
         lock.unlock();
         yeet.add("##");
         return yeet;
+    }
+
+    public List<Integer> prcEtiquetaInt(String tag){
+      List<Integer> yeet = new ArrayList<>();
+      lock.lock();
+      Iterator it = musicas.entrySet().iterator();
+      while(it.hasNext())
+      {
+          Map.Entry pair = (Map.Entry) it.next();
+          Musica inspect = (Musica) pair.getValue();
+
+          List<String> tags = inspect.getEtiquetas();
+          if(tags.contains(tag))
+              yeet.add(inspect.getId());
+      }
+      lock.unlock();
+      return yeet;
     }
 
     //método para verificar se música existe
