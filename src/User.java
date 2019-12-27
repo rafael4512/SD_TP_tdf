@@ -67,6 +67,7 @@ public class User implements Serializable{
         this.status = status;
     }
 
+    //metodo para adicionar música aos downloads do user
     public void addSong(int uniqId){
         this.downSongs.add(uniqId);
     }

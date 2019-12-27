@@ -17,6 +17,7 @@ public class ClienteSndRcv implements Runnable{
     private BufferedReader pw2;
     private PrintWriter ot2;
 
+    //construtor por atribuição
     public ClienteSndRcv(String op,BufferedReader i,PrintWriter o,BufferedReader i2,PrintWriter o2){
         operation = op;
         pw = i;
@@ -25,6 +26,7 @@ public class ClienteSndRcv implements Runnable{
         ot2 = o2;
     }
 
+    //método receive para auxiliar o transferencia de ficheiro
     public void receive(){
         try{
             String uname = pw2.readLine();
@@ -44,6 +46,7 @@ public class ClienteSndRcv implements Runnable{
         }catch(Exception e){}
     }
 
+    //método send para auxiliar transferencia de ficheiro
     public void send(){
       try{
           String name = pw2.readLine();
@@ -74,6 +77,7 @@ public class ClienteSndRcv implements Runnable{
       }catch(Exception e){}
     }
 
+    //método run
     public void run(){
       if(operation.equals("receive")){
         this.receive();

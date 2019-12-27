@@ -11,6 +11,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.TimeUnit;
 
 public class Servico implements Runnable {
 
@@ -22,6 +25,7 @@ public class Servico implements Runnable {
 
     private BufferedReader in2;
     private PrintWriter out2;
+    ReentrantLock lock;
 
     //construtor de um servico
     public Servico(Socket cliente,Socket comms,SoundSky s) {
@@ -29,6 +33,7 @@ public class Servico implements Runnable {
         this.cliente = cliente;
         this.comms = comms;
         this.sound = s;
+        this.lock = new ReentrantLock();
 
     }
 
@@ -113,13 +118,14 @@ public class Servico implements Runnable {
               }
            }catch(Exception e){}
     }
-
+    //metodo para transferir musica em background
     public void transferMusic(int uniqId,BufferedReader in, PrintWriter out){
         ServidorSndRcv ssr = new ServidorSndRcv("send",in,out,in2,out2,sound,uniqId,this.name);
         Thread t = new Thread(ssr);
         t.start();
     }
 
+    //metodo para receber musica
     public void receiveM(BufferedReader in,PrintWriter out){
       try{
           out.println("Please enter the song name:");
@@ -204,8 +210,16 @@ public class Servico implements Runnable {
             input = in.readLine();
         }catch(Exception e){}
         if(available.contains(Integer.parseInt(input))){
+          
+            sound.incrementPessoas();
             transferMusic(Integer.parseInt(input),in,out);
-            out.println("## Song Downloaded ##");
+           /* try{
+                TimeUnit.SECONDS.sleep(10);
+            }
+            catch(InterruptedException e){;}*/
+            sound.decrementPessoas();
+            
+                out.println("## Song Downloaded ##");
             out.flush();
         }else{
             out.println("## Provided ID does not belong to any song on the list shown above ##");
@@ -254,7 +268,16 @@ public class Servico implements Runnable {
         }catch(Exception e){}
 
         if(available.contains(Integer.parseInt(input))){
+        
+            sound.incrementPessoas();
             transferMusic(Integer.parseInt(input),in,out);
+            
+            /*try{
+                TimeUnit.SECONDS.sleep(10);
+            }
+            catch(InterruptedException e){;}*/
+            sound.decrementPessoas();
+
             out.println("## Song Downloaded ##");
             out.flush();
         }else{
@@ -271,7 +294,15 @@ public class Servico implements Runnable {
         try{
             uniqId = in.readLine();
         }catch(Exception e){}
+        
+        sound.incrementPessoas();
         transferMusic(Integer.parseInt(uniqId),in,out);
+        /*try{
+                TimeUnit.SECONDS.sleep(10);
+        }
+        catch(InterruptedException e){;}*/
+        sound.decrementPessoas();    
+        
         out.println("## Song Downloaded ##");
         out.flush();
     }
@@ -301,7 +332,15 @@ public class Servico implements Runnable {
         }catch(Exception e){}
 
         if(available.contains(Integer.parseInt(input))){
+        
+            sound.incrementPessoas();
             transferMusic(Integer.parseInt(input),in,out);
+            /* try{
+                TimeUnit.SECONDS.sleep(10);
+            }
+            catch(InterruptedException e){;}*/
+            sound.decrementPessoas();
+            
             out.println("## Song Downloaded ##");
             out.flush();
         }else{

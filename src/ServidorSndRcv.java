@@ -31,6 +31,7 @@ public class ServidorSndRcv implements Runnable{
     private List<String> etiquetas;
     private String filename;
 
+    //construtor por atribuição
     public ServidorSndRcv(String op,BufferedReader i,PrintWriter o,BufferedReader i2,PrintWriter o2,SoundSky ss,String path,String nm2,String ano,String aut,List<String> etiq,String filen){
         operation = op;
         in = i;
@@ -46,6 +47,7 @@ public class ServidorSndRcv implements Runnable{
         filename = filen;
     }
 
+    //construtor por atribuição
     public ServidorSndRcv(String op,BufferedReader i,PrintWriter o,BufferedReader i2,PrintWriter o2,SoundSky ss,int uID,String nm1){
         operation = op;
         in = i;
@@ -126,6 +128,7 @@ public class ServidorSndRcv implements Runnable{
           }catch(Exception e){}
         }
 
+    //método run
     public void run(){
       if(operation.equals("receive")){
         this.receiveMusic();
