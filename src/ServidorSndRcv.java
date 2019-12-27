@@ -88,10 +88,10 @@ public class ServidorSndRcv implements Runnable{
                 out2.println("Sending Finished");
                 out2.flush();
 
-                try{
-                    TimeUnit.SECONDS.sleep(25);
+                /*try{
+                    TimeUnit.SECONDS.sleep(10);
                 }
-                catch(InterruptedException e){;}
+                catch(InterruptedException e){;}*/
                 sound.decrementPessoas();
                 sound.incrementaDw(uniqId);
                 sound.addToUser(name1,uniqId);
