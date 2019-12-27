@@ -43,12 +43,12 @@ public class Servico implements Runnable {
         String psw = null;
         String usr = null;
         try{
-            while(usr==null){
+            while((usr==null) || (usr.length() == 0)){
                 out.println("Please enter your new Username:");
                 out.flush();
                 usr = in.readLine();
             }
-            while(psw==null){
+            while((psw==null) || (psw.length() == 0)){
                 out.println("Please enter your new Password:");
                 out.flush();
                 psw = in.readLine();
@@ -125,6 +125,19 @@ public class Servico implements Runnable {
         t.start();
     }
 
+    //metodo q verifica se a string fornecida consegue ser transformada num Integer
+    public static boolean isNumeric(String str) {
+        if (str == null) {
+            return false;
+        }
+        try {
+            int d = Integer.parseInt(str);
+        }catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
     //metodo para receber musica
     public void receiveM(BufferedReader in,PrintWriter out){
       try{
@@ -132,9 +145,15 @@ public class Servico implements Runnable {
           out.flush();
           String name = in.readLine();
 
-          out.println("Please enter the song year:");
-          out.flush();
-          String year = in.readLine();
+          String year = "ano";
+          int check = 0;
+          while(check == 0){
+              out.println("Please enter the song year:");
+              out.flush();
+              year = in.readLine();
+              if(isNumeric(year)){check = 1;}
+              else{out.println("Not a Number!");out.flush();}
+          }
 
           out.println("Please enter the author of the song:");
           out.flush();
@@ -210,17 +229,7 @@ public class Servico implements Runnable {
             input = in.readLine();
         }catch(Exception e){}
         if(available.contains(Integer.parseInt(input))){
-          
-            sound.incrementPessoas();
             transferMusic(Integer.parseInt(input),in,out);
-           /* try{
-                TimeUnit.SECONDS.sleep(10);
-            }
-            catch(InterruptedException e){;}*/
-            sound.decrementPessoas();
-            
-                out.println("## Song Downloaded ##");
-            out.flush();
         }else{
             out.println("## Provided ID does not belong to any song on the list shown above ##");
             out.flush();
@@ -268,18 +277,7 @@ public class Servico implements Runnable {
         }catch(Exception e){}
 
         if(available.contains(Integer.parseInt(input))){
-        
-            sound.incrementPessoas();
             transferMusic(Integer.parseInt(input),in,out);
-            
-            /*try{
-                TimeUnit.SECONDS.sleep(10);
-            }
-            catch(InterruptedException e){;}*/
-            sound.decrementPessoas();
-
-            out.println("## Song Downloaded ##");
-            out.flush();
         }else{
             out.println("## Provided ID does not belong to any song on the list shown above ##");
             out.flush();
@@ -294,17 +292,7 @@ public class Servico implements Runnable {
         try{
             uniqId = in.readLine();
         }catch(Exception e){}
-        
-        sound.incrementPessoas();
         transferMusic(Integer.parseInt(uniqId),in,out);
-        /*try{
-                TimeUnit.SECONDS.sleep(10);
-        }
-        catch(InterruptedException e){;}*/
-        sound.decrementPessoas();    
-        
-        out.println("## Song Downloaded ##");
-        out.flush();
     }
 
     //método para procurar música pelo autor
@@ -332,17 +320,7 @@ public class Servico implements Runnable {
         }catch(Exception e){}
 
         if(available.contains(Integer.parseInt(input))){
-        
-            sound.incrementPessoas();
             transferMusic(Integer.parseInt(input),in,out);
-            /* try{
-                TimeUnit.SECONDS.sleep(10);
-            }
-            catch(InterruptedException e){;}*/
-            sound.decrementPessoas();
-            
-            out.println("## Song Downloaded ##");
-            out.flush();
         }else{
             out.println("## Provided ID does not belong to any song on the list shown above ##");
             out.flush();

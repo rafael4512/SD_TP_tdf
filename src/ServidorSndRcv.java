@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.util.Base64;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.Iterator;
 
 public class ServidorSndRcv implements Runnable{
@@ -72,6 +73,7 @@ public class ServidorSndRcv implements Runnable{
             out2.flush();
             File music = new File("musicas/"+toTransfer.getFilename());
             try{
+                sound.incrementPessoas();
                 InputStream targetStream = new FileInputStream(music);
                 byte[] buf = new byte[850000];
 
@@ -86,11 +88,17 @@ public class ServidorSndRcv implements Runnable{
                 out2.println("Sending Finished");
                 out2.flush();
 
+                try{
+                    TimeUnit.SECONDS.sleep(25);
+                }
+                catch(InterruptedException e){;}
+                sound.decrementPessoas();
                 sound.incrementaDw(uniqId);
                 sound.addToUser(name1,uniqId);
                 sound.saveMusics();
                 sound.saveUsers();
-
+                out.println("## "+ toTransfer.getTitulo() +" by "+ toTransfer.getArtista() +" downloaded ##");
+                out.flush();
             }catch(Exception e){}
         }
         else{out.println("Song with given ID does not exist in our database");out.flush();}
@@ -118,7 +126,8 @@ public class ServidorSndRcv implements Runnable{
                 }
                 fos.close();
                 int idenUniq = sound.addMusica(name2,autor,year,etiquetas,filename);
-                out.println("Unique Identifier::" + idenUniq);
+                out.println("## "+ name2 +" by "+ autor +" uploaded with ID:"+idenUniq+" ##");
+                out.flush();
                 sound.saveMusics();
                 sound.newSongUpdater(name2,autor);
             }else{

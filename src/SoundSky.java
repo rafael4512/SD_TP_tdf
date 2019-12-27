@@ -423,8 +423,8 @@ public class SoundSky implements Serializable{
 
     //método para incrementar o número de pessoas a fazer download
     public void incrementPessoas(){
-        this.lock.lock();
 
+        this.lock.lock();
         while(this.n_pessoas >= MAXDOWN){
             try{
                 this.condition.await();
